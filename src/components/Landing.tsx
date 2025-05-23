@@ -10,12 +10,12 @@ export default function Landing() {
         <img
           src="/ceni-bus-blue.webp"
           alt="셔틀버스"
-          className="w-40 h-auto mx-auto my-4 drop-shadow-md"
+          className="w-40 h-auto mx-auto my-4 drop-shadow-md mt-32"
         />
-        <div className="text-center text-base text-gray-500 mb-2">-셔틀편-</div>
+        <div className="text-center text-base text-gray-500 mb-2 mt-12">-셔틀편-</div>
       </div>
       <div className="w-full flex flex-col gap-3 px-6 mt-8">
-        <button className="w-full py-3 rounded-full bg-blue-400 text-white text-base font-normal shadow hover:bg-blue-500 transition">
+        <button className="w-full py-3 rounded-lg bg-blue-400 text-white text-base font-normal shadow hover:bg-blue-500 transition">
           회원가입
         </button>
         <button className="w-full py-3 rounded-full border border-blue-300 text-blue-400 text-base font-normal bg-white hover:bg-blue-50 transition">
