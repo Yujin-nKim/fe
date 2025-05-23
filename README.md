@@ -1,2 +1,1 @@
-# Seur-A-Saeng
-Seur-A-Saeng
+# 아이티센의 슬기로운 생활
