@@ -1,4 +1,7 @@
+import { useNavigate } from 'react-router-dom';
+
 export default function Landing() {
+  const navigate = useNavigate();
   return (
     <div className="min-h-screen flex flex-col justify-between items-center bg-white pt-12 pb-8">
       <div className="flex flex-col items-center w-full">
@@ -18,7 +21,10 @@ export default function Landing() {
         <button className="w-full py-3 rounded-lg bg-blue-400 text-white text-base font-normal shadow hover:bg-blue-500 transition">
           회원가입
         </button>
-        <button className="w-full py-3 rounded-full border border-blue-300 text-blue-400 text-base font-normal bg-white hover:bg-blue-50 transition">
+        <button
+          className="w-full py-3 rounded-lg border border-blue-300 text-blue-400 text-base font-normal bg-white hover:bg-blue-50 transition"
+          onClick={() => navigate('/login')}
+        >
           로그인
         </button>
       </div>
