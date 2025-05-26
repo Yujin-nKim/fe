@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 export default function Login() {
   const navigate = useNavigate();
   return (
-    <div className="min-h-screen flex flex-col justify-between items-center bg-white pt-6 pb-4">
+    <div className="flex flex-col justify-between items-center bg-white pt-6 pb-4">
       {/* 뒤로가기 버튼 */}
       <button
         className="absolute top-4 left-4 z-10 p-2"

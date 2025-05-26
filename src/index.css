@@ -1,5 +1,13 @@
 @import "tailwindcss";
 
+:root {
+  --vh: 100vh;
+}
+
+.main-container {
+  min-height: calc(var(--vh, 1vh) * 100);
+}
+
 @font-face {
   font-family: 'GmarketSans';
   src: url('./assets/gmarket-sans-light.ttf') format('truetype');
