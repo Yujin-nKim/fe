@@ -36,14 +36,14 @@ export default function Register() {
             <button type="button" className="flex-shrink-0 min-w-[60px] px-2 py-3 rounded-lg bg-blue-400 text-white text-sm font-normal hover:bg-blue-500 transition text-base appearance-none">확인</button>
           </div>
           {/* 이름 */}
-          <label className="text-sm font-normal text-black mt-8">이름</label>
+          <label className="text-sm font-normal text-black">이름</label>
           <input
             type="text"
             className="w-full border border-gray-300 rounded-lg px-3 py-3 focus:outline-none focus:ring-2 focus:ring-blue-200 placeholder:text-gray-400 text-base appearance-none"
             placeholder="이름을 입력해주세요."
           />
           {/* 비밀번호 */}
-          <label className="text-sm font-normal text-black mt-8">비밀번호</label>
+          <label className="text-sm font-normal text-black">비밀번호</label>
           <input
             type="password"
             className="w-full border border-gray-300 rounded-lg px-3 py-3 focus:outline-none focus:ring-2 focus:ring-blue-200 placeholder:text-gray-400 text-base appearance-none"
