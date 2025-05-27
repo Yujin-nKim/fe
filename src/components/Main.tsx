@@ -56,7 +56,7 @@ export default function Main() {
         </button>
       </div>
       {/* 오른쪽 아래 챗봇 버튼 */}
-      <img src="/chat-bubble.png" alt="챗봇" className="w-16 h-16 fixed bottom-25 right-4 z-30" />
+      <img src="/chat-bubble.png" alt="챗봇" className="w-16 h-16 fixed bottom-20 right-4 z-30" />
       {/* 하단바 */}
       <nav className="fixed bottom-0 left-0 w-full bg-[#fdfdfe] border-t border-gray-100 flex justify-around items-center h-16 z-20">
         <button className="flex flex-col items-center justify-center" onClick={() => navigate('/realtime')}>
