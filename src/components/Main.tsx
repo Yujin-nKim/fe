@@ -1,7 +1,15 @@
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import Chatbot from './Chatbot';
 
 export default function Main() {
   const navigate = useNavigate();
+  const [showChatbot, setShowChatbot] = useState(false);
+
+  const handleChatbotToggle = () => {
+    setShowChatbot(prev => !prev);
+  };
+
   return (
     <div className="flex flex-col h-[calc(var(--vh,1vh)*100)] bg-[#fdfdfe] px-4 pt-6 pb-2 relative">
       {/* 상단 우측 햄버거 버튼 */}
@@ -55,8 +63,15 @@ export default function Main() {
           <span className="ml-auto mt-auto"><img src="/shuttle.png" alt="실시간 셔틀" className="w-7 h-7" /></span>
         </button>
       </div>
-      {/* 오른쪽 아래 챗봇 버튼 */}
-      <img src="/chat-bubble.png" alt="챗봇" className="w-16 h-16 fixed bottom-20 right-4 z-30" />
+      {/* 오른쪽 아래 챗봇 버튼 (항상 보임, 챗봇 열려있으면 닫기 역할) */}
+      <button
+        onClick={handleChatbotToggle}
+        className="fixed bottom-20 right-4 z-30"
+        aria-label={showChatbot ? '챗봇 닫기' : '챗봇 열기'}
+      >
+        <img src="/chat-bubble.png" alt="챗봇" className="w-16 h-16" />
+      </button>
+      {showChatbot && <Chatbot onClose={() => setShowChatbot(false)} />}
       {/* 하단바 */}
       <nav className="fixed bottom-0 left-0 w-full bg-[#fdfdfe] border-t border-gray-100 flex justify-around items-center h-16 z-20">
         <button className="flex flex-col items-center justify-center" onClick={() => navigate('/realtime')}>
