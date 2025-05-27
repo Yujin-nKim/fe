@@ -49,6 +49,11 @@ export default function Main() {
           <span className="text-xs text-blue-700 mb-2">셔틀에서 궁금한 점이 있으신가요?</span>
           <span className="ml-auto mt-auto"><img src="/lost-items.png" alt="1:1 문의" className="w-7 h-7" /></span>
         </button>
+        <button className="col-span-1 bg-[#DEE9FF] rounded-xl p-4 flex flex-col items-start shadow-sm" onClick={() => navigate('/realtime')}>
+          <span className="font-bold text-base text-blue-900 mb-1">실시간 셔틀 확인</span>
+          <span className="text-xs text-blue-700 mb-2">실시간으로 셔틀 위치를 확인하세요.</span>
+          <span className="ml-auto mt-auto"><img src="/shuttle.png" alt="실시간 셔틀" className="w-7 h-7" /></span>
+        </button>
       </div>
       {/* 오른쪽 아래 챗봇 버튼 */}
       <img src="/chat-bubble.png" alt="챗봇" className="w-16 h-16 fixed bottom-25 right-4 z-30" />
