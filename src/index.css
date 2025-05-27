@@ -6,6 +6,7 @@
 
 .main-container {
   min-height: calc(var(--vh, 1vh) * 100);
+  background-color: #fdfdfe;
 }
 
 @font-face {
@@ -32,4 +33,5 @@
 
 body {
   font-family: 'GmarketSans', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  background-color: #fdfdfe;
 }

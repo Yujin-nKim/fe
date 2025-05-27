@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 export default function Landing() {
   const navigate = useNavigate();
   return (
-    <div className="flex flex-col justify-between items-center bg-white pt-12 pb-8">
+    <div className="flex flex-col justify-between items-center bg-[#fdfdfe] pt-12 pb-8">
       <div className="flex flex-col items-center w-full">
         <p className="text-xs text-blue-300 mb-8">특별한 우리들의 평범한 매일</p>
         <h1 className="text-3xl font-bold text-center leading-tight mb-2">

@@ -15,7 +15,7 @@ export default defineConfig({
         short_name: 'ITCEN',
         start_url: '/',
         display: 'standalone',
-        background_color: '#ffffff',
+        background_color: '#fdfdfe',
         theme_color: '#5382E0',
         icons: [
           {

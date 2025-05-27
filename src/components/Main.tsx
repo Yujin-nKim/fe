@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 export default function Main() {
   const navigate = useNavigate();
   return (
-    <div className="flex flex-col h-[calc(var(--vh,1vh)*100)] bg-white px-4 pt-6 pb-2 relative">
+    <div className="flex flex-col h-[calc(var(--vh,1vh)*100)] bg-[#fdfdfe] px-4 pt-6 pb-2 relative">
       {/* 상단 우측 햄버거 버튼 */}
       <div className="flex justify-end items-center w-full mb-2">
         <button className="p-2">
@@ -20,9 +20,9 @@ export default function Main() {
           <div className="w-28 h-1 bg-blue-100 rounded-full mt-2 mb-2" />
         </div>
         <img
-          src="/ceni-dance.gif"
+          src="/ceni-dance2.gif"
           alt="ceni 캐릭터"
-          className="w-36 h-36 object-contain drop-shadow-md"
+          className="w-36 h-36"
           draggable={false}
         />
       </div>
@@ -53,7 +53,7 @@ export default function Main() {
       {/* 오른쪽 아래 챗봇 버튼 */}
       <img src="/chat-bubble.png" alt="챗봇" className="w-16 h-16 fixed bottom-25 right-4 z-30" />
       {/* 하단바 */}
-      <nav className="fixed bottom-0 left-0 w-full bg-white border-t border-gray-100 flex justify-around items-center h-16 z-20">
+      <nav className="fixed bottom-0 left-0 w-full bg-[#fdfdfe] border-t border-gray-100 flex justify-around items-center h-16 z-20">
         <button className="flex flex-col items-center justify-center" onClick={() => navigate('/realtime')}>
           <img src="/bottom-bar/bus.png" alt="셔틀" className="w-7 h-7 mb-1" />
         </button>
