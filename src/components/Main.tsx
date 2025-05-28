@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Chatbot from './Chatbot';
 import MyPageDrawer from './MyPageDrawer';
 
@@ -11,6 +11,23 @@ export default function Main() {
   const handleChatbotToggle = () => {
     setShowChatbot(prev => !prev);
   };
+
+  useEffect(() => {
+    if (drawerOpen) {
+      window.history.pushState({ drawer: true }, '');
+    }
+
+    const handlePopState = () => {
+      if (drawerOpen) {
+        setDrawerOpen(false);
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [drawerOpen]);
 
   return (
     <div className="flex flex-col h-[calc(var(--vh,1vh)*100)] bg-[#fdfdfe] px-4 pt-6 pb-2 relative">
