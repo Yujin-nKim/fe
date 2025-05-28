@@ -1,10 +1,12 @@
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import Chatbot from './Chatbot';
+import MyPageDrawer from './MyPageDrawer';
 
 export default function Main() {
   const navigate = useNavigate();
   const [showChatbot, setShowChatbot] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   const handleChatbotToggle = () => {
     setShowChatbot(prev => !prev);
@@ -14,7 +16,7 @@ export default function Main() {
     <div className="flex flex-col h-[calc(var(--vh,1vh)*100)] bg-[#fdfdfe] px-4 pt-6 pb-2 relative">
       {/* 상단 우측 햄버거 버튼 */}
       <div className="flex justify-end items-center w-full mb-2">
-        <button className="p-2">
+        <button className="p-2" onClick={() => setDrawerOpen(true)}>
           {/* 햄버거 아이콘 */}
           <span className="ml-auto mt-auto"><img src="/hamburger.png" alt="마이페이지 메뉴" className="w-7 h-7" /></span>
         </button>
@@ -72,6 +74,8 @@ export default function Main() {
         <img src="/chat-bubble.png" alt="챗봇" className="w-16 h-16" />
       </button>
       {showChatbot && <Chatbot onClose={() => setShowChatbot(false)} />}
+      {/* 마이페이지 드로어 */}
+      <MyPageDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
       {/* 하단바 */}
       <nav className="fixed bottom-0 left-0 w-full bg-[#fdfdfe] border-t border-gray-100 flex justify-around items-center h-16 z-20">
         <button className="flex flex-col items-center justify-center" onClick={() => navigate('/realtime')}>
