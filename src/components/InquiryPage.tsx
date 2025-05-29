@@ -1,7 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useState, useRef } from 'react';
 import BottomBar from './BottomBar';
-import Chatbot from './Chatbot';
 
 const inquiries = [
   {
@@ -22,6 +21,60 @@ const inquiries = [
     date: '2025.04.20',
     status: '답변완료',
   },
+  {
+    id: 4,
+    title: '[셔틀버스] 정류장 위치 문의',
+    date: '2025.04.18',
+    status: '답변완료',
+  },
+  {
+    id: 5,
+    title: '[건의] 셔틀 시간표 개선 요청',
+    date: '2025.04.15',
+    status: '답변대기',
+  },
+  {
+    id: 6,
+    title: '[오류] 앱 알림 미수신',
+    date: '2025.04.10',
+    status: '답변완료',
+  },
+  {
+    id: 7,
+    title: '[셔틀버스] 기사님 친절 후기',
+    date: '2025.04.08',
+    status: '답변완료',
+  },
+  {
+    id: 8,
+    title: '[건의] 셔틀 노선 추가 요청',
+    date: '2025.04.05',
+    status: '답변대기',
+  },
+  {
+    id: 9,
+    title: '[오류] 문의 내역이 보이지 않아요',
+    date: '2025.04.02',
+    status: '답변완료',
+  },
+  {
+    id: 10,
+    title: '[셔틀버스] 탑승 인원 제한 문의',
+    date: '2025.03.30',
+    status: '답변완료',
+  },
+  {
+    id: 11,
+    title: '[건의] 셔틀 정차 시간 연장 요청',
+    date: '2025.03.28',
+    status: '답변대기',
+  },
+  {
+    id: 12,
+    title: '[오류] 위치 정보 오류',
+    date: '2025.03.25',
+    status: '답변완료',
+  },
 ];
 
 function getStatusBadge(status: string) {
@@ -36,12 +89,9 @@ function getStatusBadge(status: string) {
 
 export default function InquiryPage() {
   const navigate = useNavigate();
-  const [showChatbot, setShowChatbot] = useState(false);
   const [draggedId, setDraggedId] = useState<number|null>(null);
   const [dragXMap, setDragXMap] = useState<{[id:number]:number}>({});
   const startXRef = useRef(0);
-
-  const handleChatbotToggle = () => setShowChatbot(prev => !prev);
 
   // 슬라이드 시작
   const handleTouchStart = (e: React.TouchEvent, id: number) => {
@@ -68,7 +118,7 @@ export default function InquiryPage() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen pb-16">
+    <div className="flex flex-col min-h-screen pb-50">
       {/* 상단바 */}
       <div className="flex items-center h-14 px-4 relative bg-white">
         <button className="absolute left-4" onClick={() => navigate(-1)}>
@@ -101,7 +151,7 @@ export default function InquiryPage() {
                   <div className="mt-0.5">{getStatusBadge(inquiry.status)}</div>
                 )}
               </div>
-              {/* 삭제 버튼: 카드의 오른쪽 바깥에 두고, 카드가 밀릴 때 자연스럽게 따라옴 */}
+              {/* 삭제 버튼 */}
               <button
                 className="absolute top-0 h-full w-20 bg-red-500 text-white font-bold text-base z-10 duration-300"
                 style={{
@@ -117,25 +167,16 @@ export default function InquiryPage() {
           );
         })}
       </div>
-      {/* 문의하기 버튼 */}
-      <div className="px-4 mt-6">
-        <button
-          className="w-full py-3 rounded-lg bg-[#5382E0] text-white text-base font-semibold shadow hover:bg-blue-700 transition"
-          onClick={() => {/* 문의 작성 페이지로 이동 예정 */}}
-        >
-          문의하기
-        </button>
-      </div>
-      {/* 오른쪽 아래 챗봇 버튼 */}
+      {/* 문의하기 FAB 버튼 - 하단 중앙 */}
       <button
-        onClick={handleChatbotToggle}
-        className="fixed bottom-20 right-4 z-30"
-        aria-label={showChatbot ? '챗봇 닫기' : '챗봇 열기'}
+        className="fixed bottom-20 left-1/2 -translate-x-1/2 z-30 w-16 h-16 rounded-full bg-[#5382E0] text-white flex items-center justify-center shadow-lg text-xl font-bold"
+        style={{ boxShadow: '0 4px 16px rgba(83,130,224,0.15)' }}
+        onClick={() => {/* 문의 작성 페이지로 이동 예정 */}}
+        aria-label="문의하기"
       >
-        <img src="/chat-bubble.png" alt="챗봇" className="w-16 h-16" />
+        <img src="/add.png" alt="문의하기" className="w-8 h-8 brightness-0 invert" />
       </button>
-      {showChatbot && <Chatbot onClose={() => setShowChatbot(false)} />}
       <BottomBar />
     </div>
   );
-} 
+}
