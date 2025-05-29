@@ -1,4 +1,5 @@
 import React, { useRef, useState } from "react";
+import { useNavigate } from 'react-router-dom';
 
 interface MyPageDrawerProps {
   open: boolean;
@@ -12,6 +13,7 @@ const MAX_OVERLAY_OPACITY = 0.18;
 const MyPageDrawer: React.FC<MyPageDrawerProps> = ({ open, onClose, onDrag }) => {
   const startX = useRef<number | null>(null);
   const [dragX, setDragX] = useState(0);
+  const navigate = useNavigate();
 
   // 드로어 열린 정도에 따라 오버레이 투명도 동적 계산
   const overlayOpacity = open
@@ -96,7 +98,7 @@ const MyPageDrawer: React.FC<MyPageDrawerProps> = ({ open, onClose, onDrag }) =>
             <div className="w-[80%] border-t border-gray-200 mt-10 mb-6" />
             <div className="w-full px-8 space-y-2 text-sm text-gray-500">
               <div>개인정보 수정</div>
-              <div>1:1 문의</div>
+              <div onClick={() => { onClose(); navigate('/inquiry'); }} className="cursor-pointer hover:text-blue-500">1:1 문의</div>
               <div className="mt-10">로그아웃</div>
             </div>
           </div>
