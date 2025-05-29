@@ -7,6 +7,7 @@ import MainPage from './components/MainPage'
 import NoticePage from './components/NoticePage'
 import NoticeDetailPage from './components/NoticeDetailPage'
 import InquiryPage from './components/InquiryPage'
+import InquiryDetailPage from './components/InquiryDetailPage'
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
           <Route path="/notice" element={<NoticePage />} />
           <Route path="/notice/:id" element={<NoticeDetailPage />} />
           <Route path="/inquiry" element={<InquiryPage />} />
+          <Route path="/inquiry/:id" element={<InquiryDetailPage />} />
         </Routes>
       </div>
     </BrowserRouter>
