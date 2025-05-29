@@ -70,17 +70,17 @@ export default function InquiryPage() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen pb-50">
+    <div className="min-h-screen pb-50 bg-white">
       {/* 상단바 */}
-      <div className="flex items-center h-14 px-4 relative bg-white">
+      <div className="fixed left-0 top-0 right-0 z-20 flex items-center h-14 px-4 bg-[#5382E0]">
         <button className="absolute left-4" onClick={() => navigate(-1)}>
-          <img src="/back.png" alt="뒤로가기" className="w-6 h-6" />
+          <img src="/back.png" alt="뒤로가기" className="w-6 h-6 invert brightness-0" />
         </button>
-        <div className="flex-1 text-center font-semibold text-lg">1:1 문의</div>
+        <div className="flex-1 text-center font-semibold text-lg text-white">1:1 문의</div>
       </div>
       <div className="border-b border-gray-100" />
       {/* 문의 목록 */}
-      <div className="flex-1 pl-4">
+      <div className="flex-1 pl-4 pt-14">
         {inquiries.map(inquiry => {
           const dragX = dragXMap[inquiry.id] || 0;
           const isDragging = draggedId === inquiry.id;
@@ -96,6 +96,7 @@ export default function InquiryPage() {
                 onTouchStart={e => handleTouchStart(e, inquiry.id)}
                 onTouchMove={e => handleTouchMove(e, inquiry.id)}
                 onTouchEnd={() => handleTouchEnd(inquiry.id)}
+                onClick={() => navigate(`/inquiry/${inquiry.id}`)}
               >
                 <div className="font-bold text-sm mb-1">{inquiry.title}</div>
                 <div className="text-xs text-gray-400 mb-1">{inquiry.date}</div>
