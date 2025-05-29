@@ -5,6 +5,7 @@ import LoginPage from './components/LoginPage'
 import RegisterPage from './components/RegisterPage'
 import MainPage from './components/MainPage'
 import NoticePage from './components/NoticePage'
+import NoticeDetailPage from './components/NoticeDetailPage'
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/main" element={<MainPage />} />
           <Route path="/notice" element={<NoticePage />} />
+          <Route path="/notice/:id" element={<NoticeDetailPage />} />
         </Routes>
       </div>
     </BrowserRouter>
