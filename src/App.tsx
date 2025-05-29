@@ -6,6 +6,7 @@ import RegisterPage from './components/RegisterPage'
 import MainPage from './components/MainPage'
 import NoticePage from './components/NoticePage'
 import NoticeDetailPage from './components/NoticeDetailPage'
+import InquiryPage from './components/InquiryPage'
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Route path="/main" element={<MainPage />} />
           <Route path="/notice" element={<NoticePage />} />
           <Route path="/notice/:id" element={<NoticeDetailPage />} />
+          <Route path="/inquiry" element={<InquiryPage />} />
         </Routes>
       </div>
     </BrowserRouter>
