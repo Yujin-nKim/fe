@@ -94,28 +94,28 @@ export default function MainPage() {
         <div className="grid grid-cols-2 gap-3 mt-4">
           <button className="col-span-1 bg-[#5382E0] rounded-xl p-4 flex flex-col items-start shadow-sm min-h-[90px]" onClick={() => navigate('/qr')}> 
             <span className="font-bold text-base text-white mb-1">QR 코드</span>
-            <span className="text-xs text-blue-100 mb-2">QR로 빠르게 셔틀에 탑승하세요.</span>
+            <span className="text-xs text-white mb-2 w-36 text-left">QR로 빠르게 셔틀에 탑승하세요.</span>
             <span className="ml-auto mt-auto"><img src="/qr.png" alt="QR 코드" className="w-7 h-7" /></span>
           </button>
           <button className="col-span-1 bg-[#DEE9FF] rounded-xl p-4 flex flex-col items-start shadow-sm min-h-[90px] relative" onClick={() => navigate('/notice')}>
-            <span className="font-bold text-base text-blue-900 mb-1">공지</span>
-            <span className="text-xs text-blue-700 mb-2">바로 셔틀 공지를 확인하세요.</span>
+            <span className="font-bold text-base text-[#5382E0]">공지</span>
+            <span className="text-xs mb-2 text-[#5382E0] w-36 text-left">바로 셔틀 공지를 확인하세요.</span>
             <span className="ml-auto mt-auto"><img src="/announcement.png" alt="공지" className="w-7 h-7" /></span>
             <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full" />
           </button>
           <button className="col-span-1 bg-[#DEE9FF] rounded-xl p-4 flex flex-col items-start shadow-sm min-h-[90px]" onClick={() => navigate('/timetable')}>
-            <span className="font-bold text-base text-blue-900 mb-1">시간표</span>
-            <span className="text-xs text-blue-700 mb-2">셔틀 시간표를 확인하세요.</span>
+            <span className="font-bold text-base text-[#5382E0]">시간표</span>
+            <span className="text-xs mb-2 text-[#5382E0] w-36 text-left">셔틀 시간표를 확인하세요.</span>
             <span className="ml-auto mt-auto"><img src="/schedule.png" alt="시간표" className="w-7 h-7" /></span>
           </button>
           <button className="col-span-1 bg-[#DEE9FF] rounded-xl p-4 flex flex-col items-start shadow-sm min-h-[90px]" onClick={() => navigate('/inquiry')}>
-            <span className="font-bold text-base text-blue-900 mb-1">1:1 문의</span>
-            <span className="text-xs text-blue-700 mb-2">셔틀에서 궁금한 점이 있으신가요?</span>
+            <span className="font-bold text-base text-[#5382E0]">1:1 문의</span>
+            <span className="text-xs mb-2 text-[#5382E0] w-36 text-left">셔틀에서 궁금한 점이 있으신가요?</span>
             <span className="ml-auto mt-auto"><img src="/lost-items.png" alt="1:1 문의" className="w-7 h-7" /></span>
           </button>
-          <button className="col-span-1 bg-[#DEE9FF] rounded-xl p-4 flex flex-col items-start shadow-sm" onClick={() => navigate('/realtime')}>
-            <span className="font-bold text-base text-blue-900 mb-1">실시간 셔틀 확인</span>
-            <span className="text-xs text-blue-700 mb-2">실시간으로 셔틀 위치를 확인하세요.</span>
+          <button className="col-span-1 bg-[#DEE9FF] rounded-xl p-4 flex flex-col items-start shadow-sm min-h-[90px]" onClick={() => navigate('/realtime')}>
+            <span className="font-bold text-base text-[#5382E0]">실시간 셔틀 확인</span>
+            <span className="text-xs mb-2 text-[#5382E0] w-36 text-left">실시간으로 셔틀 위치를 확인하세요.</span>
             <span className="ml-auto mt-auto"><img src="/shuttle.png" alt="실시간 셔틀" className="w-7 h-7" /></span>
           </button>
         </div>

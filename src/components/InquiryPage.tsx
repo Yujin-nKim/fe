@@ -50,9 +50,9 @@ export default function InquiryPage() {
       </div>
       <div className="border-b border-gray-100" />
       {/* 문의 목록 */}
-      <div className="flex-1 px-4 pt-4 space-y-3">
+      <div className="flex-1 px-4">
         {inquiries.map(inquiry => (
-          <div key={inquiry.id} className="rounded-lg px-0 py-3 border-b border-gray-100">
+          <div key={inquiry.id} className="py-3 border-b border-gray-100">
             <div className="font-bold text-sm mb-1">{inquiry.title}</div>
             <div className="text-xs text-gray-400 mb-1">{inquiry.date}</div>
             {getStatusBadge(inquiry.status) && (

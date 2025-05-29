@@ -35,7 +35,7 @@ export default function NoticePage() {
         <div className="flex-1 text-center font-semibold text-lg">공지사항</div>
       </div>
       {/* 공지 리스트 */}
-      <div className="flex-1 px-4 pt-2">
+      <div className="flex-1 px-4">
         {notices.map(notice => (
           <div
             key={notice.id}
