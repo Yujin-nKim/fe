@@ -3,19 +3,19 @@ import React, { useRef, useState } from "react";
 interface MyPageDrawerProps {
   open: boolean;
   onClose: () => void;
+  onDrag: (dragX: number) => void;
 }
 
 const DRAG_CLOSE_THRESHOLD = 80; // px
-const MAX_DRAG_X = 300; // px
 const MAX_OVERLAY_OPACITY = 0.18;
 
-const MyPageDrawer: React.FC<MyPageDrawerProps> = ({ open, onClose }) => {
+const MyPageDrawer: React.FC<MyPageDrawerProps> = ({ open, onClose, onDrag }) => {
   const startX = useRef<number | null>(null);
   const [dragX, setDragX] = useState(0);
 
   // 드로어 열린 정도에 따라 오버레이 투명도 동적 계산
   const overlayOpacity = open
-    ? MAX_OVERLAY_OPACITY * (1 - Math.min(dragX, MAX_DRAG_X) / MAX_DRAG_X)
+    ? MAX_OVERLAY_OPACITY * (1 - dragX / window.innerWidth) // 화면 너비를 기준으로 투명도 계산
     : 0;
 
   // 터치 시작
@@ -28,7 +28,10 @@ const MyPageDrawer: React.FC<MyPageDrawerProps> = ({ open, onClose }) => {
     if (startX.current === null) return;
     const clientX = e.touches[0].clientX;
     const deltaX = clientX - startX.current;
-    if (deltaX > 0) setDragX(Math.min(deltaX, MAX_DRAG_X)); // 오른쪽으로만 이동
+    if (deltaX > 0) {
+      setDragX(deltaX);
+      onDrag(deltaX);
+    }
   };
 
   // 터치 끝
@@ -41,6 +44,7 @@ const MyPageDrawer: React.FC<MyPageDrawerProps> = ({ open, onClose }) => {
       }
     }
     setDragX(0);
+    onDrag(0);
     startX.current = null;
   };
 
@@ -51,20 +55,20 @@ const MyPageDrawer: React.FC<MyPageDrawerProps> = ({ open, onClose }) => {
         className={`fixed inset-0 bg-black z-40 ${open ? "pointer-events-auto" : "pointer-events-none"}`}
         style={{
           opacity: overlayOpacity,
-          transition: dragX > 0 ? "none" : "opacity 0.3s"
+          transition: dragX > 0 ? "none" : "opacity 0.2s"
         }}
         onClick={onClose}
       />
       {/* 드로어 */}
       <aside
-        className={`fixed top-0 right-0 h-full w-[80vw] max-w-xs bg-white z-50 shadow-lg transition-transform duration-300 ${
+        className={`fixed top-0 right-0 h-full w-[80vw] max-w-xs bg-white z-50 shadow-lg ${
           open ? "translate-x-0" : "translate-x-full"
         }`}
         style={{
           transform: open
             ? `translateX(${dragX > 0 ? dragX : 0}px)`
             : "translateX(100%)",
-          transition: dragX > 0 ? "none" : undefined,
+          transition: dragX > 0 ? "none" : "all 200ms ease-in-out",
         }}
         onTouchStart={handleDragStart}
         onTouchMove={handleDragMove}
