@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import Chatbot from './Chatbot';
 import MyPageDrawer from './MyPageDrawer';
+import BottomBar from './BottomBar';
 
 // 드로어 관련 상수
 const DRAWER_WIDTH = 80; // 드로어의 너비 (vw 단위)
@@ -135,23 +136,10 @@ export default function Main() {
         onDrag={handleDrawerDrag}
       />
       {/* 하단바 */}
-      <nav 
-        className="fixed bottom-0 left-0 right-0 h-16 bg-white border-t border-gray-200 flex justify-around items-center px-4"
-        style={{
-          transform: getTransform(),
-          transition: dragX > 0 ? 'none' : 'all 200ms ease-in-out',
-        }}
-      >
-        <button className="flex flex-col items-center justify-center" onClick={() => navigate('/realtime')}>
-          <img src="/bottom-bar/bus.png" alt="셔틀" className="w-7 h-7 mb-1" />
-        </button>
-        <button className="flex flex-col items-center justify-center" onClick={() => navigate('/')}> 
-          <img src="/bottom-bar/home.png" alt="홈" className="w-7 h-7 mb-1" />
-        </button>
-        <button className="flex flex-col items-center justify-center" onClick={() => navigate('/notice')}> 
-          <img src="/bottom-bar/clip-board.png" alt="공지" className="w-7 h-7 mb-1" />
-        </button>
-      </nav>
+      <BottomBar 
+        transform={getTransform()}
+        transition={dragX > 0 ? 'none' : 'all 200ms ease-in-out'}
+      />
     </div>
   );
 } 
