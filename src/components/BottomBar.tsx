@@ -19,7 +19,7 @@ export default function BottomBar({ transform, transition }: BottomBarProps) {
       <button className="flex flex-col items-center justify-center" onClick={() => navigate('/realtime')}>
         <img src="/bottom-bar/bus.png" alt="셔틀" className="w-7 h-7 mb-1" />
       </button>
-      <button className="flex flex-col items-center justify-center" onClick={() => navigate('/')}> 
+      <button className="flex flex-col items-center justify-center" onClick={() => navigate('/main')}> 
         <img src="/bottom-bar/home.png" alt="홈" className="w-7 h-7 mb-1" />
       </button>
       <button className="flex flex-col items-center justify-center" onClick={() => navigate('/notice')}> 
