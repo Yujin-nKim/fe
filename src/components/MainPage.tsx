@@ -7,7 +7,7 @@ import BottomBar from './BottomBar';
 // 드로어 관련 상수
 const DRAWER_WIDTH = 80; // 드로어의 너비 (vw 단위)
 
-export default function Main() {
+export default function MainPage() {
   const navigate = useNavigate();
   const [showChatbot, setShowChatbot] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);

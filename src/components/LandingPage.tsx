@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 
-export default function Landing() {
+export default function LandingPage() {
   const navigate = useNavigate();
   return (
     <div className="flex flex-col justify-between items-center bg-[#fdfdfe] pt-12 pb-8">
@@ -29,6 +29,12 @@ export default function Landing() {
           onClick={() => navigate('/login')}
         >
           로그인
+        </button>
+        <button
+          className="w-full py-3 rounded-lg border border-gray-400 text-gray-700 text-base font-normal bg-white hover:bg-gray-50 transition mt-2"
+          onClick={() => navigate('/main')}
+        >
+          메인 페이지 테스트
         </button>
       </div>
     </div>

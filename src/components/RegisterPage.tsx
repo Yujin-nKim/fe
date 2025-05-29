@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 
-export default function Register() {
+export default function RegisterPage() {
   const navigate = useNavigate();
   return (
     <div className="flex flex-col justify-between items-center bg-[#fdfdfe] pt-6 pb-4 min-h-full">
