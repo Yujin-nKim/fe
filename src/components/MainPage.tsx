@@ -110,7 +110,7 @@ export default function MainPage() {
           </button>
           <button className="col-span-1 bg-[#DEE9FF] rounded-xl p-4 flex flex-col items-start shadow-sm min-h-[90px]" onClick={() => navigate('/inquiry')}>
             <span className="font-bold text-base text-[#5382E0]">1:1 문의</span>
-            <span className="text-xs mb-2 text-[#5382E0] w-36 text-left">셔틀에서 궁금한 점이 있으신가요?</span>
+            <span className="text-xs mb-2 text-[#5382E0] w-36 text-left">셔틀에서 무엇을 잃어버리셨나요?</span>
             <span className="ml-auto mt-auto"><img src="/lost-items.png" alt="1:1 문의" className="w-7 h-7" /></span>
           </button>
           <button className="col-span-1 bg-[#DEE9FF] rounded-xl p-4 flex flex-col items-start shadow-sm min-h-[90px]" onClick={() => navigate('/realtime')}>
