@@ -92,6 +92,8 @@ export default function InquiryPage() {
   const [draggedId, setDraggedId] = useState<number|null>(null);
   const [dragXMap, setDragXMap] = useState<{[id:number]:number}>({});
   const startXRef = useRef(0);
+  const [startY, setStartY] = useState(0);
+  const [isScrolling, setIsScrolling] = useState(false);
 
   // 슬라이드 시작
   const handleTouchStart = (e: React.TouchEvent, id: number) => {
@@ -105,13 +107,27 @@ export default function InquiryPage() {
     }
 
     startXRef.current = e.touches[0].clientX - currentDragX;
+    setStartY(e.touches[0].clientY);
     setDraggedId(id);
+    setIsScrolling(false);
   };
 
   // 슬라이드 중
   const handleTouchMove = (e: React.TouchEvent, id: number) => {
     if (draggedId !== id) return;
     const deltaX = e.touches[0].clientX - startXRef.current;
+    const deltaY = e.touches[0].clientY - startY;
+
+    // 수직 스크롤이 더 큰 경우 스크롤 모드로 전환
+    if (!isScrolling && Math.abs(deltaY) > Math.abs(deltaX)) {
+      setIsScrolling(true);
+      setDraggedId(null); // 스크롤 모드로 전환되면 draggedId를 null로 설정
+      return;
+    }
+
+    // 스크롤 중이면 슬라이드 동작 무시
+    if (isScrolling) return;
+
     setDragXMap(prev => ({ ...prev, [id]: Math.min(0, Math.max(deltaX, -80)) }));
   };
 
@@ -124,6 +140,7 @@ export default function InquiryPage() {
       setDragXMap(prev => ({ ...prev, [id]: 0 }));
     }
     setDraggedId(null);
+    setIsScrolling(false);
   };
 
   return (
