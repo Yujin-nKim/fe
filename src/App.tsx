@@ -4,6 +4,7 @@ import LandingPage from './components/LandingPage'
 import LoginPage from './components/LoginPage'
 import RegisterPage from './components/RegisterPage'
 import MainPage from './components/MainPage'
+import NoticePage from './components/NoticePage'
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/main" element={<MainPage />} />
+          <Route path="/notice" element={<NoticePage />} />
         </Routes>
       </div>
     </BrowserRouter>
