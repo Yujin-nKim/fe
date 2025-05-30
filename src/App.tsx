@@ -9,6 +9,7 @@ import NoticeDetailPage from './components/NoticeDetailPage'
 import MyInquiryPage from './components/MyInquiryPage'
 import InquiryDetailPage from './components/InquiryDetailPage'
 import InquiryWritePage from './components/InquiryWritePage'
+import QrPage from './components/QrPage'
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           <Route path="/inquiry" element={<MyInquiryPage />} />
           <Route path="/inquiry/:id" element={<InquiryDetailPage />} />
           <Route path="/inquiry/write" element={<InquiryWritePage />} />
+          <Route path="/qr" element={<QrPage />} />
         </Routes>
       </div>
     </BrowserRouter>
