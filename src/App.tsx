@@ -8,6 +8,7 @@ import NoticePage from './components/NoticePage'
 import NoticeDetailPage from './components/NoticeDetailPage'
 import MyInquiryPage from './components/MyInquiryPage'
 import InquiryDetailPage from './components/InquiryDetailPage'
+import InquiryWritePage from './components/InquiryWritePage'
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <Route path="/notice/:id" element={<NoticeDetailPage />} />
           <Route path="/inquiry" element={<MyInquiryPage />} />
           <Route path="/inquiry/:id" element={<InquiryDetailPage />} />
+          <Route path="/inquiry/write" element={<InquiryWritePage />} />
         </Routes>
       </div>
     </BrowserRouter>

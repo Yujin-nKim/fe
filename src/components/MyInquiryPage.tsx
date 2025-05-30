@@ -121,7 +121,7 @@ export default function MyInquiryPage() {
       <button
         className="fixed bottom-20 left-1/2 -translate-x-1/2 z-30 w-16 h-16 rounded-full bg-[#5382E0] text-white flex items-center justify-center shadow-lg text-xl font-bold"
         style={{ boxShadow: '0 4px 16px rgba(83,130,224,0.15)' }}
-        onClick={() => {/* 문의 작성 페이지로 이동 예정 */}}
+        onClick={() => navigate('/inquiry/write')}
         aria-label="문의하기"
       >
         <img src="/add.png" alt="문의하기" className="w-8 h-8 brightness-0 invert" />
