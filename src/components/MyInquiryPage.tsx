@@ -90,7 +90,13 @@ export default function MyInquiryPage() {
                 onClick={() => navigate(`/inquiry/${inquiry.id}`)}
               >
                 <div className="font-bold text-sm mb-1">{inquiry.title}</div>
-                <div className="text-xs text-gray-400 mb-1">{inquiry.date}</div>
+                <div className="text-xs text-gray-400 mb-1">
+                  {(() => {
+                    const dateObj = new Date(inquiry.date);
+                    if (isNaN(dateObj.getTime())) return inquiry.date;
+                    return `${dateObj.getFullYear()}.${(dateObj.getMonth()+1).toString().padStart(2,'0')}.${dateObj.getDate().toString().padStart(2,'0')} ${dateObj.getHours().toString().padStart(2,'0')}:${dateObj.getMinutes().toString().padStart(2,'0')}`;
+                  })()}
+                </div>
                 {getStatusBadge(inquiry.status) && (
                   <div className="mt-0.5">{getStatusBadge(inquiry.status)}</div>
                 )}
