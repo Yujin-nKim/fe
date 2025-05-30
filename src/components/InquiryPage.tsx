@@ -23,16 +23,7 @@ export default function InquiryPage() {
 
   // 슬라이드 시작
   const handleTouchStart = (e: React.TouchEvent, id: number) => {
-    const currentDragX = dragXMap[id] || 0;
-    
-    // 삭제 버튼이 보이는 상태(슬라이드가 열린 상태)에서 터치하면 슬라이드 닫기
-    if (currentDragX < -10) {
-      setDragXMap(prev => ({ ...prev, [id]: 0 }));
-      setDraggedId(null);
-      return;
-    }
-
-    startXRef.current = e.touches[0].clientX - currentDragX;
+    startXRef.current = e.touches[0].clientX - (dragXMap[id] || 0);
     setStartY(e.touches[0].clientY);
     setDraggedId(id);
     setIsScrolling(false);
