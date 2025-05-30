@@ -108,7 +108,7 @@ export default function MainPage() {
             <span className="text-xs mb-2 text-[#5382E0] w-36 text-left">셔틀 시간표를 확인하세요.</span>
             <span className="ml-auto mt-auto"><img src="/schedule.png" alt="시간표" className="w-7 h-7" /></span>
           </button>
-          <button className="col-span-1 bg-[#DEE9FF] rounded-xl p-4 flex flex-col items-start shadow-sm min-h-[90px]" onClick={() => navigate('/inquiry')}>
+          <button className="col-span-1 bg-[#DEE9FF] rounded-xl p-4 flex flex-col items-start shadow-sm min-h-[90px]" onClick={() => navigate('/inquiry/write')}>
             <span className="font-bold text-base text-[#5382E0]">1:1 문의</span>
             <span className="text-xs mb-2 text-[#5382E0] w-36 text-left">셔틀에서 무엇을 잃어버리셨나요?</span>
             <span className="ml-auto mt-auto"><img src="/lost-items.png" alt="1:1 문의" className="w-7 h-7" /></span>

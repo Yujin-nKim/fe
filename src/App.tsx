@@ -6,7 +6,7 @@ import RegisterPage from './components/RegisterPage'
 import MainPage from './components/MainPage'
 import NoticePage from './components/NoticePage'
 import NoticeDetailPage from './components/NoticeDetailPage'
-import InquiryPage from './components/InquiryPage'
+import MyInquiryPage from './components/MyInquiryPage'
 import InquiryDetailPage from './components/InquiryDetailPage'
 
 function App() {
@@ -20,7 +20,7 @@ function App() {
           <Route path="/main" element={<MainPage />} />
           <Route path="/notice" element={<NoticePage />} />
           <Route path="/notice/:id" element={<NoticeDetailPage />} />
-          <Route path="/inquiry" element={<InquiryPage />} />
+          <Route path="/inquiry" element={<MyInquiryPage />} />
           <Route path="/inquiry/:id" element={<InquiryDetailPage />} />
         </Routes>
       </div>

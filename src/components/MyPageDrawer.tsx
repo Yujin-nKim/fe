@@ -93,12 +93,12 @@ const MyPageDrawer: React.FC<MyPageDrawerProps> = ({ open, onClose, onDrag }) =>
             <div className="w-full px-8 space-y-4">
               <div className="text-sm font-medium">내 QR</div>
               <div className="text-sm font-medium">나의 탑승내역</div>
-              <div className="text-sm font-medium">나의 문의내역</div>
+              <div onClick={() => { onClose(); navigate('/inquiry'); }} className="text-sm font-medium">나의 문의내역</div>
             </div>
             <div className="w-[80%] border-t border-gray-200 mt-10 mb-6" />
             <div className="w-full px-8 space-y-2 text-sm text-gray-500">
               <div>개인정보 수정</div>
-              <div onClick={() => { onClose(); navigate('/inquiry'); }} className="cursor-pointer hover:text-blue-500">1:1 문의</div>
+              <div className="cursor-pointer hover:text-blue-500">1:1 문의</div>
               <div className="mt-10">로그아웃</div>
             </div>
           </div>

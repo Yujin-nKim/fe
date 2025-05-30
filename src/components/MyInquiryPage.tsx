@@ -13,7 +13,7 @@ function getStatusBadge(status: string) {
   return null;
 }
 
-export default function InquiryPage() {
+export default function MyInquiryPage() {
   const navigate = useNavigate();
   const [draggedId, setDraggedId] = useState<number|null>(null);
   const [dragXMap, setDragXMap] = useState<{[id:number]:number}>({});
@@ -67,7 +67,7 @@ export default function InquiryPage() {
         <button className="absolute left-4" onClick={() => navigate(-1)}>
           <img src="/back.png" alt="뒤로가기" className="w-6 h-6 invert brightness-0" />
         </button>
-        <div className="flex-1 text-center font-semibold text-lg text-white">1:1 문의</div>
+        <div className="flex-1 text-center font-semibold text-lg text-white">나의 문의 내역</div>
       </div>
       <div className="border-b border-gray-100" />
       {/* 문의 목록 */}
