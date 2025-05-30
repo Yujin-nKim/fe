@@ -19,11 +19,17 @@ export default function NoticePage() {
         {notices.map(notice => (
           <div
             key={notice.id}
-            className="py-3 border-b border-gray-100"
+            className="py-3 border-b border-gray-100 relative"
             onClick={() => navigate(`/notice/${notice.id}`)}
           >
             <div className="font-bold text-sm mb-1">{notice.title}</div>
-            <div className="text-xs text-gray-400 mb-2">{notice.date}</div>
+            <div className="text-xs text-gray-400 mb-2">
+              {(() => {
+                const dateObj = new Date(notice.date);
+                if (isNaN(dateObj.getTime())) return notice.date;
+                return `${dateObj.getFullYear()}.${(dateObj.getMonth()+1).toString().padStart(2,'0')}.${dateObj.getDate().toString().padStart(2,'0')} ${dateObj.getHours().toString().padStart(2,'0')}:${dateObj.getMinutes().toString().padStart(2,'0')}`;
+              })()}
+            </div>
             <div className="text-xs text-gray-600 truncate select-none">{notice.content}</div>
           </div>
         ))}
