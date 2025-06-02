@@ -4,7 +4,7 @@ import Chatbot from './Chatbot';
 import MyPageDrawer from './MyPageDrawer';
 import BottomBar from './BottomBar';
 import PopupModal from './PopupModal';
-import notices from './noticesMock';
+import notices from '../mocks/noticesMock';
 
 // 드로어 관련 상수
 const DRAWER_WIDTH = 80; // 드로어의 너비 (vw 단위)

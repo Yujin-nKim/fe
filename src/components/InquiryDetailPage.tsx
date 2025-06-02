@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
-import inquiries from "./inquiriesMock";
+import inquiries from "../mocks/inquiriesMock";
 import BottomBar from './BottomBar';
 
 const InquiryDetailPage = () => {

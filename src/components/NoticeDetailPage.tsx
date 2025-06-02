@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import BottomBar from './BottomBar';
-import notices from './noticesMock';
+import notices from '../mocks/noticesMock';
 import Chatbot from './Chatbot';
 
 export default function NoticeDetailPage() {

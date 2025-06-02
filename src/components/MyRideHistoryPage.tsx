@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import BottomBar from './BottomBar';
-import rideHistoryMock from './rideHistoryMock';
+import rideHistoryMock from '../mocks/rideHistoryMock';
 import Chatbot from './Chatbot';
 
 const formatDate = (dateStr: string) => {
