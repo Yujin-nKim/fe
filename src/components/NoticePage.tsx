@@ -1,12 +1,19 @@
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import BottomBar from './BottomBar';
 import notices from './noticesMock';
+import Chatbot from './Chatbot';
 
 export default function NoticePage() {
   const navigate = useNavigate();
+  const [showChatbot, setShowChatbot] = useState(false);
+
+  const handleChatbotToggle = () => {
+    setShowChatbot(prev => !prev);
+  };
 
   return (
-    <div className="min-h-screen bg-white pb-16">
+    <div className="min-h-screen bg-white pb-40">
       {/* 상단바 */}
       <div className="fixed left-0 top-0 right-0 z-20 flex items-center h-14 px-4 border-b border-gray-100 bg-[#5382E0]">
         <button className="absolute left-4" onClick={() => navigate(-1)}>
@@ -34,6 +41,15 @@ export default function NoticePage() {
           </div>
         ))}
       </div>
+      {/* 오른쪽 아래 챗봇 버튼 */}
+      <button
+        onClick={handleChatbotToggle}
+        className="fixed bottom-20 right-4 z-30"
+        aria-label={showChatbot ? '챗봇 닫기' : '챗봇 열기'}
+      >
+        <img src="/chat-bubble.png" alt="챗봇" className="w-16 h-16" />
+      </button>
+      {showChatbot && <Chatbot onClose={() => setShowChatbot(false)} />}
       {/* 하단바 */}
       <BottomBar />
     </div>
