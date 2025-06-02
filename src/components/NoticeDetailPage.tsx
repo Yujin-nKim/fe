@@ -32,7 +32,13 @@ export default function NoticeDetailPage() {
       </div>
       <div className="px-5 pt-6 pb-2">
         <div className="text-[#5382E0] font-bold text-base mb-1">{notice.title}</div>
-        <div className="text-xs text-gray-400 mb-2">{notice.date}</div>
+        <div className="text-xs text-gray-400 mb-2">
+          {(() => {
+            const dateObj = new Date(notice.date);
+            if (isNaN(dateObj.getTime())) return notice.date;
+            return `${dateObj.getFullYear()}.${(dateObj.getMonth()+1).toString().padStart(2,'0')}.${dateObj.getDate().toString().padStart(2,'0')} ${dateObj.getHours().toString().padStart(2,'0')}:${dateObj.getMinutes().toString().padStart(2,'0')}`;
+          })()}
+        </div>
       </div>
       <div className="mx-5 mb-4 bg-[#DEE9FF] border border-[#5382E0] rounded-xl p-4 text-gray-800 text-[15px] whitespace-pre-line">
         {notice.content}
