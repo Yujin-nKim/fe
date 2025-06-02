@@ -3,15 +3,47 @@ import { useState, useEffect } from 'react';
 import Chatbot from './Chatbot';
 import MyPageDrawer from './MyPageDrawer';
 import BottomBar from './BottomBar';
+import PopupModal from './PopupModal';
+import notices from './noticesMock';
 
 // 드로어 관련 상수
 const DRAWER_WIDTH = 80; // 드로어의 너비 (vw 단위)
 
 export default function MainPage() {
   const navigate = useNavigate();
+  const [showModal, setShowModal] = useState(() => {
+    const today = new Date().toISOString().slice(0, 10);
+    return localStorage.getItem('hidePopupToday') !== today;
+  });
   const [showChatbot, setShowChatbot] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [dragX, setDragX] = useState(0);
+
+  // 최신 공지 가져오기 (date 기준 내림차순 정렬 후 첫 번째)
+  const latestNotice = [...notices].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())[0];
+
+  // 오늘 그만 보기 버튼 핸들러
+  const handleDontShowToday = () => {
+    const today = new Date().toISOString().slice(0, 10);
+    localStorage.setItem('hidePopupToday', today);
+    setShowModal(false);
+  };
+
+  // 공지 바로가기 핸들러
+  const handleGoToNotice = () => {
+    if (latestNotice?.id) {
+      navigate(`/notice/${latestNotice.id}`);
+      setShowModal(false);
+    }
+  };
+
+  // 페이지 진입 시 오늘 그만 보기 체크
+  useEffect(() => {
+    const today = new Date().toISOString().slice(0, 10);
+    if (localStorage.getItem('hidePopupToday') === today) {
+      setShowModal(false);
+    }
+  }, []);
 
   const handleChatbotToggle = () => {
     setShowChatbot(prev => !prev);
@@ -61,6 +93,15 @@ export default function MainPage() {
 
   return (
     <div className="flex flex-col h-[calc(var(--vh,1vh)*100)] bg-[#fdfdfe] px-4 pt-6 pb-2 relative">
+      {/* 팝업 모달 */}
+      <PopupModal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        title={latestNotice?.title || '공지사항'}
+        content={latestNotice?.content || '공지 내용이 없습니다.'}
+        dontShowTodayHandler={handleDontShowToday}
+        goToNoticeHandler={handleGoToNotice}
+      />
       {/* 메인 컨텐츠를 감싸는 div에 transition 추가 */}
       <div 
         style={{
