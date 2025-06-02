@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 
 interface MyPageDrawerProps {
@@ -11,66 +11,95 @@ const DRAG_CLOSE_THRESHOLD = 80; // px
 const MAX_OVERLAY_OPACITY = 0.18;
 
 const MyPageDrawer: React.FC<MyPageDrawerProps> = ({ open, onClose, onDrag }) => {
-  const startX = useRef<number | null>(null);
-  const [dragX, setDragX] = useState(0);
+  const startXRef = useRef<number | null>(null);
+  const currentXRef = useRef<number>(0);
+  const drawerRef = useRef<HTMLDivElement>(null);
+  const overlayRef = useRef<HTMLDivElement>(null);
+  const isDraggingRef = useRef(false);
   const navigate = useNavigate();
 
-  // 드로어 열린 정도에 따라 오버레이 투명도 동적 계산
-  const overlayOpacity = open
-    ? MAX_OVERLAY_OPACITY * (1 - dragX / window.innerWidth) // 화면 너비를 기준으로 투명도 계산
-    : 0;
+  useEffect(() => {
+    if (drawerRef.current && overlayRef.current) {
+      if (open) {
+        drawerRef.current.style.transform = 'translateX(0)';
+        overlayRef.current.style.opacity = String(MAX_OVERLAY_OPACITY);
+      } else {
+        drawerRef.current.style.transform = 'translateX(100%)';
+        overlayRef.current.style.opacity = '0';
+      }
+    }
+  }, [open]);
 
   // 터치 시작
   const handleDragStart = (e: React.TouchEvent) => {
-    startX.current = e.touches[0].clientX;
+    isDraggingRef.current = true;
+    if (drawerRef.current) {
+      drawerRef.current.style.transition = 'none';
+    }
+    if (overlayRef.current) {
+      overlayRef.current.style.transition = 'none';
+    }
+    startXRef.current = e.touches[0].clientX;
+    currentXRef.current = e.touches[0].clientX;
   };
 
   // 터치 이동
   const handleDragMove = (e: React.TouchEvent) => {
-    if (startX.current === null) return;
-    const clientX = e.touches[0].clientX;
-    const deltaX = clientX - startX.current;
+    if (!isDraggingRef.current || startXRef.current === null || !drawerRef.current || !overlayRef.current) return;
+    
+    currentXRef.current = e.touches[0].clientX;
+    const deltaX = currentXRef.current - startXRef.current;
+    
     if (deltaX > 0) {
-      setDragX(deltaX);
+      drawerRef.current.style.transform = `translateX(${deltaX}px)`;
+      const opacity = MAX_OVERLAY_OPACITY * (1 - deltaX / window.innerWidth);
+      overlayRef.current.style.opacity = String(opacity);
       onDrag(deltaX);
     }
   };
 
   // 터치 끝
   const handleDragEnd = () => {
-    if (dragX > DRAG_CLOSE_THRESHOLD) {
+    if (!drawerRef.current || !overlayRef.current) return;
+    
+    isDraggingRef.current = false;
+    drawerRef.current.style.transition = 'transform 200ms ease-in-out';
+    overlayRef.current.style.transition = 'opacity 200ms ease-in-out';
+    
+    const deltaX = currentXRef.current - startXRef.current!;
+    if (deltaX > DRAG_CLOSE_THRESHOLD) {
       onClose();
       // 히스토리에서 가짜 스택 제거
       if (window.history.state && window.history.state.drawer) {
         window.history.back();
       }
+    } else {
+      drawerRef.current.style.transform = 'translateX(0)';
+      overlayRef.current.style.opacity = String(MAX_OVERLAY_OPACITY);
     }
-    setDragX(0);
     onDrag(0);
-    startX.current = null;
+    startXRef.current = null;
   };
 
   return (
     <>
       {/* 오버레이 */}
       <div
+        ref={overlayRef}
         className={`fixed inset-0 bg-black z-40 ${open ? "pointer-events-auto" : "pointer-events-none"}`}
         style={{
-          opacity: overlayOpacity,
-          transition: dragX > 0 ? "none" : "opacity 0.2s"
+          opacity: 0,
+          transition: 'opacity 200ms ease-in-out'
         }}
         onClick={onClose}
       />
       {/* 드로어 */}
       <aside
-        className={`fixed top-0 right-0 h-full w-[80vw] max-w-xs bg-white z-50 shadow-lg ${
-          open ? "translate-x-0" : "translate-x-full"
-        }`}
+        ref={drawerRef}
+        className={`fixed top-0 right-0 h-full w-[80vw] max-w-xs bg-white z-50 shadow-lg`}
         style={{
-          transform: open
-            ? `translateX(${dragX > 0 ? dragX : 0}px)`
-            : "translateX(100%)",
-          transition: dragX > 0 ? "none" : "all 200ms ease-in-out",
+          transform: 'translateX(100%)',
+          transition: 'transform 200ms ease-in-out',
         }}
         onTouchStart={handleDragStart}
         onTouchMove={handleDragMove}
