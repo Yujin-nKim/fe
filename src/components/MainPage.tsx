@@ -37,11 +37,17 @@ export default function MainPage() {
     }
   };
 
-  // 페이지 진입 시 오늘 그만 보기 체크
+  // 페이지 진입 시 모달 상태 초기화
   useEffect(() => {
     const today = new Date().toISOString().slice(0, 10);
-    if (localStorage.getItem('hidePopupToday') === today) {
+    const shouldShowModal = localStorage.getItem('hidePopupToday') !== today;
+    
+    // 모달 상태를 잠시 false로 설정했다가 true로 변경하여 애니메이션 트리거
+    if (shouldShowModal) {
       setShowModal(false);
+      requestAnimationFrame(() => {
+        setShowModal(true);
+      });
     }
   }, []);
 
