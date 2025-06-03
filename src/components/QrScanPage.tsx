@@ -29,7 +29,7 @@ const QrScanPage = () => {
         const stream = await navigator.mediaDevices.getUserMedia({ video: true });
         stream.getTracks().forEach(track => track.stop());
         setCameraPermission(true);
-      } catch (err) {
+      } catch {
         setCameraPermission(false);
       }
     };
