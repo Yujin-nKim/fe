@@ -165,6 +165,9 @@ export default function MainPage() {
             <span className="text-xs mb-2 text-[#5382E0] w-36 text-left">실시간으로 셔틀 위치를 확인하세요.</span>
             <span className="ml-auto mt-auto"><img src="/shuttle.png" alt="실시간 셔틀" className="w-7 h-7" /></span>
           </button>
+          <button className="col-span-1 bg-[#DEE9FF] rounded-xl p-4 flex flex-col items-start shadow-sm min-h-[90px]" onClick={() => navigate('/qr-scan')}>
+            <span className="font-bold text-base text-[#5382E0]">QR 스캔 테스트</span>
+          </button>
         </div>
       </div>
       {/* 오른쪽 아래 챗봇 버튼 */}
