@@ -1,0 +1,47 @@
+# Spring Boot 3.3.12 + Java 21 도커파일
+FROM openjdk:21-jdk-slim as build
+
+# 작업 디렉토리 설정
+WORKDIR /workspace/app
+
+# Maven Wrapper와 pom.xml 복사
+COPY mvnw .
+COPY .mvn .mvn
+COPY pom.xml .
+
+# 소스 코드 복사
+COPY src src
+
+# Maven Wrapper 실행 권한
+RUN chmod +x ./mvnw
+
+# 빌드 실행 (테스트 스킵)
+RUN ./mvnw clean package -DskipTests
+
+# 런타임 스테이지
+FROM openjdk:21-jre-slim
+
+# 필수 패키지 설치 (curl for health check)
+RUN apt-get update && apt-get install -y \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# 작업 디렉토리
+WORKDIR /app
+
+# 빌드된 JAR 파일 복사
+COPY --from=build /workspace/app/target/*.jar app.jar
+
+# 헬스체크
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:8080/api/health || exit 1
+
+# 포트 노출
+EXPOSE 8080
+
+# 환경 변수 설정
+ENV SPRING_PROFILES_ACTIVE=prod
+ENV JAVA_OPTS="-Xmx512m -Xms256m"
+
+# 실행 명령
+ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar --spring.profiles.active=$SPRING_PROFILES_ACTIVE"]

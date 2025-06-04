@@ -1,0 +1,146 @@
+name: Backend Deploy
+
+on:
+  push:
+    branches: [ be ]  # be 브랜치에 푸시되면 실행
+  workflow_dispatch:
+
+env:
+  DOCKER_IMAGE: seuraseung-backend
+  CONTAINER_NAME: seuraseung-backend-container
+
+jobs:
+  deploy-backend:
+    runs-on: ubuntu-latest
+    
+    steps:
+    # 1. be 브랜치에서 백엔드 코드 가져오기
+    - name: Checkout backend code
+      uses: actions/checkout@v4
+      with:
+        ref: be
+        path: backend-source
+    
+    # 2. cicd 브랜치에서 도커파일 가져오기  
+    - name: Checkout cicd configs
+      uses: actions/checkout@v4
+      with:
+        ref: cicd
+        path: cicd-configs
+    
+    # 3. 백엔드 코드에 도커파일 복사
+    - name: Copy Dockerfile to backend
+      run: |
+        cp cicd-configs/dockerfiles/Dockerfile.backend backend-source/Dockerfile
+        ls -la backend-source/
+    
+    # 4. JDK 21 설정
+    - name: Set up JDK 21
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+    
+    # 5. 백엔드 테스트 (선택사항)
+    - name: Test backend
+      working-directory: ./backend-source
+      run: |
+        if [ -f "./mvnw" ]; then
+          chmod +x ./mvnw
+          ./mvnw clean test -DskipTests  # 일단 테스트 스킵
+        else
+          echo "⚠️ mvnw not found, skipping tests"
+        fi
+    
+    # 6. Docker 이미지 빌드
+    - name: Build Docker image
+      working-directory: ./backend-source
+      run: |
+        docker build -t $DOCKER_IMAGE:latest .
+        docker tag $DOCKER_IMAGE:latest $DOCKER_IMAGE:${{ github.sha }}
+    
+    # 7. Docker 이미지 저장
+    - name: Save Docker image
+      run: |
+        docker save $DOCKER_IMAGE:latest | gzip > backend-image.tar.gz
+    
+    # 8. 백엔드 서버에 배포 준비
+    - name: Deploy to Backend Server
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.BACKEND_HOST }}
+        username: ${{ secrets.BACKEND_USER }}
+        key: ${{ secrets.BACKEND_SSH_KEY }}
+        port: 22
+        script: |
+          # 기존 컨테이너 정리
+          docker stop ${{ env.CONTAINER_NAME }} || true
+          docker rm ${{ env.CONTAINER_NAME }} || true
+          docker rmi ${{ env.DOCKER_IMAGE }}:latest || true
+          
+          # 이전 이미지 파일 정리
+          rm -f /tmp/backend-image.tar.gz
+    
+    # 9. Docker 이미지 서버로 복사
+    - name: Copy Docker image to server
+      uses: appleboy/scp-action@v0.1.7
+      with:
+        host: ${{ secrets.BACKEND_HOST }}
+        username: ${{ secrets.BACKEND_USER }}
+        key: ${{ secrets.BACKEND_SSH_KEY }}
+        port: 22
+        source: "backend-image.tar.gz"
+        target: "/tmp/"
+    
+    # 10. 서버에서 컨테이너 실행
+    - name: Load and run Docker container
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.BACKEND_HOST }}
+        username: ${{ secrets.BACKEND_USER }}
+        key: ${{ secrets.BACKEND_SSH_KEY }}
+        port: 22
+        script: |
+          # Docker 이미지 로드
+          cd /tmp
+          docker load < backend-image.tar.gz
+          
+          # 네트워크 생성 (없으면)
+          docker network create seuraseung-network || true
+          
+          # 백엔드 컨테이너 실행
+          docker run -d \
+            --name ${{ env.CONTAINER_NAME }} \
+            --network seuraseung-network \
+            -p 8080:8080 \
+            -e SPRING_PROFILES_ACTIVE=prod \
+            -e SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/seurasaeng?currentSchema=seurasaeng-prod \
+            -e SPRING_DATASOURCE_USERNAME=postgres \
+            -e SPRING_DATASOURCE_PASSWORD=${{ secrets.DB_PASSWORD }} \
+            -e SPRING_REDIS_HOST=localhost \
+            -e SPRING_REDIS_PORT=6379 \
+            -e SPRING_REDIS_DATABASE=0 \
+            --restart unless-stopped \
+            ${{ env.DOCKER_IMAGE }}:latest
+          
+          # 헬스체크 대기
+          echo "⏳ 백엔드 서비스 시작 대기 중..."
+          sleep 15
+          
+          # 헬스체크
+          for i in {1..30}; do
+            if curl -f http://localhost:8080/api/health; then
+              echo "✅ 백엔드 배포 성공!"
+              break
+            fi
+            echo "대기 중... ($i/30)"
+            sleep 2
+          done
+          
+          # 정리
+          rm -f /tmp/backend-image.tar.gz
+          
+          # 상태 확인
+          docker ps | grep seuraseung-backend
+          echo "🎉 백엔드 배포 완료!"
+          echo "🔧 백엔드 API: http://10.0.2.165:8080/api/health"

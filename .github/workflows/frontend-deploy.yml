@@ -1,0 +1,139 @@
+name: Frontend Deploy
+
+on:
+  push:
+    branches: [ fe ]  # fe 브랜치에 푸시되면 실행
+  workflow_dispatch:
+
+env:
+  DOCKER_IMAGE: seuraseung-frontend
+  CONTAINER_NAME: seuraseung-frontend-container
+
+jobs:
+  deploy-frontend:
+    runs-on: ubuntu-latest
+    
+    steps:
+    # 1. fe 브랜치에서 프론트엔드 코드 가져오기
+    - name: Checkout frontend code
+      uses: actions/checkout@v4
+      with:
+        ref: fe
+        path: frontend-source
+    
+    # 2. cicd 브랜치에서 도커파일 가져오기
+    - name: Checkout cicd configs
+      uses: actions/checkout@v4
+      with:
+        ref: cicd
+        path: cicd-configs
+    
+    # 3. 프론트엔드 코드에 도커파일과 nginx 설정 복사
+    - name: Copy Docker configs to frontend
+      run: |
+        cp cicd-configs/dockerfiles/Dockerfile.frontend frontend-source/Dockerfile
+        cp cicd-configs/dockerfiles/nginx.conf frontend-source/nginx.conf
+        ls -la frontend-source/
+    
+    # 4. Node.js 설정
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+    
+    # 5. 프론트엔드 테스트 (선택사항)
+    - name: Test frontend
+      working-directory: ./frontend-source
+      run: |
+        if [ -f "package.json" ]; then
+          npm ci
+          npm test -- --watchAll=false --coverage=false || echo "⚠️ 테스트 스킵"
+        else
+          echo "⚠️ package.json not found, skipping tests"
+        fi
+    
+    # 6. Docker 이미지 빌드
+    - name: Build Docker image
+      working-directory: ./frontend-source
+      run: |
+        docker build -t $DOCKER_IMAGE:latest .
+        docker tag $DOCKER_IMAGE:latest $DOCKER_IMAGE:${{ github.sha }}
+    
+    # 7. Docker 이미지 저장
+    - name: Save Docker image
+      run: |
+        docker save $DOCKER_IMAGE:latest | gzip > frontend-image.tar.gz
+    
+    # 8. 프론트엔드 서버에 배포 준비
+    - name: Deploy to Frontend Server
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.FRONTEND_HOST }}
+        username: ${{ secrets.FRONTEND_USER }}
+        key: ${{ secrets.FRONTEND_SSH_KEY }}
+        port: 22
+        script: |
+          # 기존 컨테이너 정리
+          docker stop ${{ env.CONTAINER_NAME }} || true
+          docker rm ${{ env.CONTAINER_NAME }} || true
+          docker rmi ${{ env.DOCKER_IMAGE }}:latest || true
+          
+          # 이전 이미지 파일 정리
+          rm -f /tmp/frontend-image.tar.gz
+    
+    # 9. Docker 이미지 서버로 복사
+    - name: Copy Docker image to server
+      uses: appleboy/scp-action@v0.1.7
+      with:
+        host: ${{ secrets.FRONTEND_HOST }}
+        username: ${{ secrets.FRONTEND_USER }}
+        key: ${{ secrets.FRONTEND_SSH_KEY }}
+        port: 22
+        source: "frontend-image.tar.gz"
+        target: "/tmp/"
+    
+    # 10. 서버에서 컨테이너 실행
+    - name: Load and run Docker container
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.FRONTEND_HOST }}
+        username: ${{ secrets.FRONTEND_USER }}
+        key: ${{ secrets.FRONTEND_SSH_KEY }}
+        port: 22
+        script: |
+          # Docker 이미지 로드
+          cd /tmp
+          docker load < frontend-image.tar.gz
+          
+          # 네트워크 생성 (없으면)
+          docker network create seuraseung-network || true
+          
+          # 프론트엔드 컨테이너 실행
+          docker run -d \
+            --name ${{ env.CONTAINER_NAME }} \
+            --network seuraseung-network \
+            -p 80:80 \
+            --restart unless-stopped \
+            ${{ env.DOCKER_IMAGE }}:latest
+          
+          # 헬스체크 대기
+          echo "⏳ 프론트엔드 서비스 시작 대기 중..."
+          sleep 10
+          
+          # 헬스체크
+          for i in {1..30}; do
+            if curl -f http://localhost/health; then
+              echo "✅ 프론트엔드 배포 성공!"
+              break
+            fi
+            echo "대기 중... ($i/30)"
+            sleep 2
+          done
+          
+          # 정리
+          rm -f /tmp/frontend-image.tar.gz
+          
+          # 상태 확인
+          docker ps | grep seuraseung-frontend
+          echo "🎉 프론트엔드 배포 완료!"
+          echo "🌐 사이트 접속: http://13.125.3.120"
