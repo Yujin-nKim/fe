@@ -1,0 +1,48 @@
+# 환경변수 파일
+.env
+.env.local
+.env.production
+.env.development
+
+# 로그 파일
+*.log
+logs/
+
+# Docker 관련
+*.tar.gz
+docker-compose.override.yml
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Backend (Java/Spring)
+backend/target/
+backend/.mvn/wrapper/maven-wrapper.jar
+backend/mvnw
+backend/mvnw.cmd
+
+# Frontend (React/Node)
+frontend/node_modules/
+frontend/build/
+frontend/dist/
+frontend/.pnp
+frontend/.pnp.js
+
+# 테스트 결과
+frontend/coverage/
+
+# 임시 파일
+*.tmp
+*.temp
+*~
+
+# 백업 파일
+*.bak
+*.backup
