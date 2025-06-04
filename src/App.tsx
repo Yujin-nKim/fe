@@ -12,6 +12,7 @@ import InquiryWritePage from './components/InquiryWritePage'
 import QrPage from './components/QrPage'
 import MyRideHistoryPage from './components/MyRideHistoryPage'
 import QrScanPage from './components/QrScanPage'
+import ShuttleTimetablePage from './components/ShuttleTimetablePage'
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
           <Route path="/qr" element={<QrPage />} />
           <Route path="/qr-scan" element={<QrScanPage />} />
           <Route path="/my-ride-history" element={<MyRideHistoryPage />} />
+          <Route path="/timetable" element={<ShuttleTimetablePage />} />
         </Routes>
       </div>
     </BrowserRouter>
