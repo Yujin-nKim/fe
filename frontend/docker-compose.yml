@@ -1,0 +1,41 @@
+version: '3.8'
+
+networks:
+  frontend-network:
+    driver: bridge
+
+volumes:
+  nginx_logs:
+    driver: local
+
+services:
+  # React + Nginx 프론트엔드
+  frontend:
+    image: seuraseung-frontend:latest
+    container_name: seuraseung-frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - frontend-network
+    volumes:
+      # Nginx 로그 볼륨
+      - nginx_logs:/var/log/nginx
+      - /home/ubuntu/logs/nginx:/var/log/nginx
+      # 설정 파일 오버라이드 (필요시)
+      # - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      # - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    environment:
+      # 환경별 설정
+      - NGINX_WORKER_PROCESSES=auto
+      - NGINX_WORKER_CONNECTIONS=1024
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    labels:
+      - "com.docker.compose.service=frontend"
+      - "com.seuraseung.service=frontend"

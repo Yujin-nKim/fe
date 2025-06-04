@@ -1,0 +1,164 @@
+name: Deploy to AWS EC2
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy-backend:
+    name: Deploy Backend to Private Server
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up JDK 21
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+        
+    - name: Cache Maven dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.m2
+        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+        restore-keys: ${{ runner.os }}-m2
+        
+    - name: Build with Maven
+      run: |
+        cd backend
+        mvn clean package -DskipTests
+        
+    - name: Build Docker image
+      run: |
+        cd backend
+        docker build -t seuraseung-backend:latest .
+        
+    - name: Save Docker image
+      run: |
+        docker save seuraseung-backend:latest | gzip > backend-image.tar.gz
+        
+    - name: Deploy to Backend Server
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host: ${{ secrets.FRONT_SERVER_HOST }}
+        username: ubuntu
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          # Backend 서버로 이미지 전송 및 배포
+          ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.BACK_SERVER_HOST }} 'bash -s' < /home/ubuntu/deploy-backend.sh
+          
+    - name: Copy files to Front Server
+      uses: appleboy/scp-action@v0.1.5
+      with:
+        host: ${{ secrets.FRONT_SERVER_HOST }}
+        username: ubuntu
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        source: "backend-image.tar.gz,backend/deploy.sh,backend/docker-compose.yml"
+        target: "/home/ubuntu/"
+        
+    - name: Deploy Backend via Front Server
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host: ${{ secrets.FRONT_SERVER_HOST }}
+        username: ubuntu
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          # Backend 이미지를 Back Server로 전송
+          scp -o StrictHostKeyChecking=no backend-image.tar.gz ubuntu@${{ secrets.BACK_SERVER_HOST }}:/home/ubuntu/
+          scp -o StrictHostKeyChecking=no backend/deploy.sh ubuntu@${{ secrets.BACK_SERVER_HOST }}:/home/ubuntu/
+          scp -o StrictHostKeyChecking=no backend/docker-compose.yml ubuntu@${{ secrets.BACK_SERVER_HOST }}:/home/ubuntu/
+          
+          # Backend 서버에서 배포 실행
+          ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.BACK_SERVER_HOST }} 'bash /home/ubuntu/deploy.sh'
+          
+          # 정리
+          rm -f backend-image.tar.gz backend/deploy.sh backend/docker-compose.yml
+
+  deploy-frontend:
+    name: Deploy Frontend to Public Server
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: frontend/package-lock.json
+        
+    - name: Install dependencies
+      run: |
+        cd frontend
+        npm ci
+        
+    - name: Build React app
+      run: |
+        cd frontend
+        npm run build
+        
+    - name: Build Docker image
+      run: |
+        cd frontend
+        docker build -t seuraseung-frontend:latest .
+        
+    - name: Save Docker image
+      run: |
+        docker save seuraseung-frontend:latest | gzip > frontend-image.tar.gz
+        
+    - name: Copy files to Front Server
+      uses: appleboy/scp-action@v0.1.5
+      with:
+        host: ${{ secrets.FRONT_SERVER_HOST }}
+        username: ubuntu
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        source: "frontend-image.tar.gz,frontend/deploy.sh,frontend/docker-compose.yml,frontend/nginx"
+        target: "/home/ubuntu/"
+        
+    - name: Deploy Frontend
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host: ${{ secrets.FRONT_SERVER_HOST }}
+        username: ubuntu
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          bash /home/ubuntu/frontend/deploy.sh
+          rm -f frontend-image.tar.gz
+
+  setup-database:
+    name: Setup Database Schemas
+    runs-on: ubuntu-latest
+    needs: deploy-backend
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Copy database scripts
+      uses: appleboy/scp-action@v0.1.5
+      with:
+        host: ${{ secrets.FRONT_SERVER_HOST }}
+        username: ubuntu
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        source: "database/"
+        target: "/home/ubuntu/"
+        
+    - name: Setup Database via Backend Server
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host: ${{ secrets.FRONT_SERVER_HOST }}
+        username: ubuntu
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          # 데이터베이스 설정 스크립트를 Backend 서버로 전송
+          scp -r -o StrictHostKeyChecking=no database/ ubuntu@${{ secrets.BACK_SERVER_HOST }}:/home/ubuntu/
+          
+          # Backend 서버에서 데이터베이스 초기화 실행
+          ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.BACK_SERVER_HOST }} 'bash /home/ubuntu/database/setup-db.sh'
