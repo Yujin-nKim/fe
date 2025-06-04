@@ -30,17 +30,17 @@ jobs:
         
     - name: Build with Maven
       run: |
-        cd backend
+        cd seurasaeng_be
         mvn clean package -DskipTests
         
     - name: Build Docker image
       run: |
-        cd backend
+        cd seurasaeng_be
         docker build -t seuraseung-backend:latest .
         
     - name: Save Docker image
       run: |
-        docker save seuraseung-backend:latest | gzip > backend-image.tar.gz
+        docker save seuraseung-backend:latest | gzip > seurasaeng_be-image.tar.gz
         
     - name: Deploy to Backend Server
       uses: appleboy/ssh-action@v1.0.0
@@ -58,7 +58,7 @@ jobs:
         host: ${{ secrets.FRONT_SERVER_HOST }}
         username: ubuntu
         key: ${{ secrets.SSH_PRIVATE_KEY }}
-        source: "backend-image.tar.gz,backend/deploy.sh,backend/docker-compose.yml"
+        source: "seurasaeng_be-image.tar.gz,seurasaeng_be/deploy.sh,seurasaeng_be/docker-compose.yml"
         target: "/home/ubuntu/"
         
     - name: Deploy Backend via Front Server
@@ -69,15 +69,15 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
           # Backend 이미지를 Back Server로 전송
-          scp -o StrictHostKeyChecking=no backend-image.tar.gz ubuntu@${{ secrets.BACK_SERVER_HOST }}:/home/ubuntu/
-          scp -o StrictHostKeyChecking=no backend/deploy.sh ubuntu@${{ secrets.BACK_SERVER_HOST }}:/home/ubuntu/
-          scp -o StrictHostKeyChecking=no backend/docker-compose.yml ubuntu@${{ secrets.BACK_SERVER_HOST }}:/home/ubuntu/
+          scp -o StrictHostKeyChecking=no seurasaeng_be-image.tar.gz ubuntu@${{ secrets.BACK_SERVER_HOST }}:/home/ubuntu/
+          scp -o StrictHostKeyChecking=no seurasaeng_be/deploy.sh ubuntu@${{ secrets.BACK_SERVER_HOST }}:/home/ubuntu/
+          scp -o StrictHostKeyChecking=no seurasaeng_be/docker-compose.yml ubuntu@${{ secrets.BACK_SERVER_HOST }}:/home/ubuntu/
           
           # Backend 서버에서 배포 실행
           ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.BACK_SERVER_HOST }} 'bash /home/ubuntu/deploy.sh'
           
           # 정리
-          rm -f backend-image.tar.gz backend/deploy.sh backend/docker-compose.yml
+          rm -f seurasaeng_be-image.tar.gz seurasaeng_be/deploy.sh seurasaeng_be/docker-compose.yml
 
   deploy-frontend:
     name: Deploy Frontend to Public Server
@@ -92,26 +92,26 @@ jobs:
       with:
         node-version: '18'
         cache: 'npm'
-        cache-dependency-path: frontend/package-lock.json
+        cache-dependency-path: seurasaeng_fe/package-lock.json
         
     - name: Install dependencies
       run: |
-        cd frontend
+        cd seurasaeng_fe
         npm ci
         
     - name: Build React app
       run: |
-        cd frontend
+        cd seurasaeng_fe
         npm run build
         
     - name: Build Docker image
       run: |
-        cd frontend
+        cd seurasaeng_fe
         docker build -t seuraseung-frontend:latest .
         
     - name: Save Docker image
       run: |
-        docker save seuraseung-frontend:latest | gzip > frontend-image.tar.gz
+        docker save seuraseung-frontend:latest | gzip > seurasaeng_fe-image.tar.gz
         
     - name: Copy files to Front Server
       uses: appleboy/scp-action@v0.1.5
@@ -119,7 +119,7 @@ jobs:
         host: ${{ secrets.FRONT_SERVER_HOST }}
         username: ubuntu
         key: ${{ secrets.SSH_PRIVATE_KEY }}
-        source: "frontend-image.tar.gz,frontend/deploy.sh,frontend/docker-compose.yml,frontend/nginx"
+        source: "seurasaeng_fe-image.tar.gz,seurasaeng_fe/deploy.sh,seurasaeng_fe/docker-compose.yml,seurasaeng_fe/nginx"
         target: "/home/ubuntu/"
         
     - name: Deploy Frontend
@@ -129,8 +129,8 @@ jobs:
         username: ubuntu
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
-          bash /home/ubuntu/frontend/deploy.sh
-          rm -f frontend-image.tar.gz
+          bash /home/ubuntu/seurasaeng_fe/deploy.sh
+          rm -f seurasaeng_fe-image.tar.gz
 
   setup-database:
     name: Setup Database Schemas

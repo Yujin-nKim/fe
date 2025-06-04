@@ -56,18 +56,18 @@ EOF
 fi
 
 # Docker 이미지 로드
-if [ -f "backend-image.tar.gz" ]; then
+if [ -f "seurasaeng_be-image.tar.gz" ]; then
     log_info "Docker 이미지를 로드합니다..."
-    docker load < backend-image.tar.gz
+    docker load < seurasaeng_be-image.tar.gz
     if [ $? -eq 0 ]; then
         log_success "Docker 이미지 로드 완료"
-        rm -f backend-image.tar.gz
+        rm -f seurasaeng_be-image.tar.gz
     else
         log_error "Docker 이미지 로드 실패"
         exit 1
     fi
 else
-    log_warning "backend-image.tar.gz 파일이 없습니다. 기존 이미지를 사용합니다."
+    log_warning "seurasaeng_be-image.tar.gz 파일이 없습니다. 기존 이미지를 사용합니다."
 fi
 
 # 기존 컨테이너 중지 및 제거
@@ -125,6 +125,7 @@ log_success "🎉 Backend 배포가 완료되었습니다!"
 log_info "📊 서비스 상태 확인: docker-compose ps"
 log_info "📋 로그 확인: docker-compose logs -f [서비스명]"
 log_info "🔍 Backend API Health Check: http://10.0.2.165:8080/api/actuator/health"
+log_info "🌐 External API Access: https://seurasaeng.site/api/actuator/health"
 
 # 배포 정보 기록
 echo "$(date): Backend deployment completed" >> /home/ubuntu/deployment.log

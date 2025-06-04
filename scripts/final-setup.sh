@@ -189,34 +189,35 @@ cat > README.md << 'EOF'
 ```
 seuraseung/
 ├── .github/workflows/     # GitHub Actions
-├── backend/              # Spring Boot 백엔드
-├── frontend/            # React 프론트엔드
-├── database/           # DB 초기화 스크립트
-└── scripts/           # 설정 스크립트
+├── seurasaeng_be/         # Spring Boot 백엔드
+├── seurasaeng_fe/         # React 프론트엔드
+├── database/              # DB 초기화 스크립트
+└── scripts/               # 설정 스크립트
 ```
 
 ## 🔧 로컬 개발 환경 설정
 ```bash
 # 백엔드 실행
-cd backend
+cd seurasaeng_be
 mvn spring-boot:run -Dspring-boot.run.profiles=dev
 
 # 프론트엔드 실행
-cd frontend
+cd seurasaeng_fe
 npm install
 npm start
 ```
 
 ## 🌐 서비스 URL
-- **프론트엔드**: http://13.125.3.120
-- **백엔드 API**: http://13.125.3.120/api
-- **헬스체크**: http://13.125.3.120/api/actuator/health
+- **프론트엔드**: https://seurasaeng.site
+- **백엔드 API**: https://seurasaeng.site/api
+- **헬스체크**: https://seurasaeng.site/api/actuator/health
 
 ## 👥 팀원 작업 가이드
-1. 기능 개발: `feature/기능명-be` 또는 `feature/기능명-fe` 브랜치
-2. 개발 완료 후: `be` 또는 `fe` 브랜치로 PR (팀원 2명 리뷰)
-3. 통합: `dev` 브랜치로 PR (팀장 리뷰)
-4. 배포: `main` 브랜치로 PR (팀장이 진행)
+1. **백엔드 개발**: `feature/기능명-be` → `be` 브랜치 (`seurasaeng_be/` 폴더)
+2. **프론트엔드 개발**: `feature/기능명-fe` → `fe` 브랜치 (`seurasaeng_fe/` 폴더)
+3. 개발 완료 후: 통합 브랜치로 PR (팀원 2명 리뷰)
+4. 통합: `dev` 브랜치로 PR (팀장 리뷰)
+5. 배포: `main` 브랜치로 PR → 자동 배포!
 
 ## 📊 모니터링
 - **로그 위치**: `/home/ubuntu/logs/`

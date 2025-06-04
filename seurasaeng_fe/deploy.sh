@@ -47,7 +47,7 @@ fi
 
 # 기존 컨테이너 중지 및 제거
 log_info "기존 컨테이너들을 중지합니다..."
-docker-compose -f frontend/docker-compose.yml down --remove-orphans
+docker-compose -f seurasaeng_fe/docker-compose.yml down --remove-orphans
 
 # 사용하지 않는 이미지 정리
 log_info "사용하지 않는 Docker 이미지를 정리합니다..."
@@ -64,7 +64,7 @@ fi
 
 # 새 컨테이너 시작
 log_info "새로운 컨테이너를 시작합니다..."
-docker-compose -f frontend/docker-compose.yml up -d
+docker-compose -f seurasaeng_fe/docker-compose.yml up -d
 
 # 헬스체크 대기
 log_info "서비스가 정상적으로 시작될 때까지 대기합니다..."
@@ -101,6 +101,20 @@ else
     log_warning "백엔드 서버 연결을 확인할 수 없습니다. 백엔드가 실행 중인지 확인하세요."
 fi
 
+# SSL 인증서 상태 확인
+log_info "SSL 인증서 상태를 확인합니다..."
+if command -v certbot >/dev/null 2>&1; then
+    CERT_STATUS=$(sudo certbot certificates 2>/dev/null | grep -c "seurasaeng.site" || echo "0")
+    if [ "$CERT_STATUS" -gt 0 ]; then
+        log_success "SSL 인증서가 설치되어 있습니다."
+    else
+        log_warning "SSL 인증서가 없습니다. 다음 명령어로 설치하세요:"
+        log_warning "sudo certbot --nginx -d seurasaeng.site -d www.seurasaeng.site"
+    fi
+else
+    log_warning "Certbot이 설치되지 않았습니다. SSL 설정이 필요합니다."
+fi
+
 # 포트 상태 확인
 log_info "포트 상태를 확인합니다..."
 if netstat -tuln | grep -q ":80 "; then
@@ -111,14 +125,14 @@ fi
 
 # 최종 상태 확인
 log_info "전체 서비스 상태를 확인합니다..."
-docker-compose -f frontend/docker-compose.yml ps
+docker-compose -f seurasaeng_fe/docker-compose.yml ps
 
 # 배포 완료 메시지
 log_success "🎉 Frontend 배포가 완료되었습니다!"
-log_info "🌐 웹사이트 접속: http://13.125.3.120"
-log_info "🔍 헬스체크: http://13.125.3.120/health"
-log_info "📊 서비스 상태 확인: docker-compose -f frontend/docker-compose.yml ps"
-log_info "📋 로그 확인: docker-compose -f frontend/docker-compose.yml logs -f"
+log_info "🌐 웹사이트 접속: https://seurasaeng.site"
+log_info "🔍 헬스체크: https://seurasaeng.site/health"
+log_info "📊 서비스 상태 확인: docker-compose -f seurasaeng_fe/docker-compose.yml ps"
+log_info "📋 로그 확인: docker-compose -f seurasaeng_fe/docker-compose.yml logs -f"
 
 # 배포 정보 기록
 echo "$(date): Frontend deployment completed" >> /home/ubuntu/deployment.log
