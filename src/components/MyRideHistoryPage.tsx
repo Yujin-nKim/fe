@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import BottomBar from './BottomBar';
 import rideHistoryMock from '../mocks/rideHistoryMock';
-import Chatbot from './Chatbot';
 
 const formatDate = (dateStr: string) => {
   const dateObj = new Date(dateStr);
@@ -12,11 +11,6 @@ const formatDate = (dateStr: string) => {
 
 const MyRideHistoryPage: React.FC = () => {
   const navigate = useNavigate();
-  const [showChatbot, setShowChatbot] = useState(false);
-
-  const handleChatbotToggle = () => {
-    setShowChatbot(prev => !prev);
-  };
 
   return (
     <div className="min-h-screen bg-[#fdfdfe] pb-16">
@@ -54,16 +48,6 @@ const MyRideHistoryPage: React.FC = () => {
       </div>
       {/* 하단바 */}
       <BottomBar />
-
-      {/* 오른쪽 아래 챗봇 버튼 */}
-      <button
-        onClick={handleChatbotToggle}
-        className="fixed bottom-20 right-4 z-30"
-        aria-label={showChatbot ? '챗봇 닫기' : '챗봇 열기'}
-      >
-        <img src="/chat-bubble.png" alt="챗봇" className="w-16 h-16" />
-      </button>
-      {showChatbot && <Chatbot onClose={() => setShowChatbot(false)} />}
     </div>
   );
 };
