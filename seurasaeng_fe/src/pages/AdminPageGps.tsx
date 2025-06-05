@@ -193,6 +193,7 @@ function AdminPage() {
 
       const gpsPayload: GpsPayload = {
         routeId: selectedValue,
+        type: "RUNNING",
         latitude: location.latitude,
         longitude: location.longitude,
         timestamp: getKstTimestamp(),
