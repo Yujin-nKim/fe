@@ -16,6 +16,7 @@ import ShuttleTimetablePage from './components/ShuttleTimetablePage'
 import AdminPageGps from './pages/AdminPageGps'
 import EmployeeGPSApp from './pages/EmployeePageGps'
 import ResetPasswordPage from './components/ResetPasswordPage'
+import EditProfilePage from './components/EditProfilePage'
 
 function App() {
   return (
@@ -38,6 +39,7 @@ function App() {
           <Route path="/realtime-shuttle" element={<EmployeeGPSApp />} />
           <Route path="/admin/race-gps" element={<AdminPageGps />} />
           <Route path="/reset-password" element={<ResetPasswordPage />} />
+          <Route path="/edit-profile" element={<EditProfilePage />} />
         </Routes>
       </div>
     </BrowserRouter>
