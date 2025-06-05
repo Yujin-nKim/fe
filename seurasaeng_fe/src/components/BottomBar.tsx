@@ -1,4 +1,6 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { HiHome, HiClipboardDocumentList } from 'react-icons/hi2';
+import { FaBusAlt } from 'react-icons/fa';
 
 interface BottomBarProps {
   transform?: string;
@@ -7,6 +9,12 @@ interface BottomBarProps {
 
 export default function BottomBar({ transform, transition }: BottomBarProps) {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // 경로별 활성화 여부
+  const isShuttle = location.pathname === '/realtime-shuttle';
+  const isHome = location.pathname === '/main';
+  const isNotice = location.pathname.startsWith('/notice');
 
   return (
     <nav 
@@ -16,14 +24,17 @@ export default function BottomBar({ transform, transition }: BottomBarProps) {
         ...(transition && { transition }),
       }}
     >
-      <button className="flex flex-col items-center justify-center" onClick={() => navigate('/realtime')}>
-        <img src="/bottom-bar/bus.png" alt="셔틀" className="w-7 h-7 mb-1" />
+      <button className="flex flex-col items-center justify-center" onClick={() => navigate('/realtime-shuttle')}>
+        <FaBusAlt size={28} color={isShuttle ? '#5382E0' : '#B0B0B0'} />
+        <span className={`text-xs mt-0.5 ${isShuttle ? 'text-[#5382E0] font-bold' : 'text-[#B0B0B0]'}`}>셔틀</span>
       </button>
       <button className="flex flex-col items-center justify-center" onClick={() => navigate('/main')}> 
-        <img src="/bottom-bar/home.png" alt="홈" className="w-7 h-7 mb-1" />
+        <HiHome size={28} color={isHome ? '#5382E0' : '#B0B0B0'} />
+        <span className={`text-xs mt-0.5 ${isHome ? 'text-[#5382E0] font-bold' : 'text-[#B0B0B0]'}`}>홈</span>
       </button>
       <button className="flex flex-col items-center justify-center" onClick={() => navigate('/notice')}> 
-        <img src="/bottom-bar/clip-board.png" alt="공지" className="w-7 h-7 mb-1" />
+        <HiClipboardDocumentList size={28} color={isNotice ? '#5382E0' : '#B0B0B0'} />
+        <span className={`text-xs mt-0.5 ${isNotice ? 'text-[#5382E0] font-bold' : 'text-[#B0B0B0]'}`}>공지</span>
       </button>
     </nav>
   );
