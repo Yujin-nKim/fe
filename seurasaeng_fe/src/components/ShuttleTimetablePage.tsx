@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import BottomBar from './BottomBar';
 import shuttleData from '../mocks/shuttle_schedule.json';
+import SlideTab from './SlideTab';
 
 type TimetableItem = {
   거점: string;
@@ -25,8 +26,6 @@ const getLocations = () => {
 };
 
 const LOCATIONS = getLocations();
-const TYPES = ["출근", "퇴근"] as const;
-type TabType = typeof TYPES[number];
 
 // 도착 시간 계산 함수
 function getArrivalTime(departure: string, duration: string): string {
@@ -51,12 +50,6 @@ function isPastTime(departure: string) {
   return dep < now;
 }
 
-// 슬라이드 탭에서 스크롤바 숨김
-const timetableScrollbarStyle = `
-  .timetable-no-scrollbar::-webkit-scrollbar { display: none; }
-  .timetable-no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-`;
-
 // 시간 입력 핸들러 (숫자만, 자동 HH:MM 포맷)
 function handleTimeInput(val: string, setValue: (v: string) => void) {
   // 숫자만 남기기
@@ -77,8 +70,6 @@ export default function ShuttleTimetablePage() {
 
   const navigate = useNavigate();
   const [locationIdx, setLocationIdx] = useState(0);
-  const [tab, setTab] = useState<TabType>("출근");
-  const location = LOCATIONS[locationIdx];
 
   const locationTabRef = useRef<HTMLDivElement>(null);
   const selectedBtnRefs = useRef<(HTMLButtonElement | null)[]>([]);
@@ -94,18 +85,13 @@ export default function ShuttleTimetablePage() {
   // 수정 모드 취소/완료를 위한 원본 백업
   const [originalTimetableData, setOriginalTimetableData] = useState<ShuttleScheduleJson | null>(null);
 
+  const [tab, setTab] = useState<'출근' | '퇴근'>("출근");
+
   // Filter timetable for selected location and type
   const timetable: TimetableItem[] = timetableData[tab].filter(
-    (item) => item.거점 === location
+    (item) => item.거점 === LOCATIONS[locationIdx]
   );
 
-  // 거점 슬라이드 탭: 모든 거점 버튼을 한 줄에 보여주고, 좌우 화살표로 선택 이동
-  const handlePrev = () => {
-    setLocationIdx((prev) => (prev - 1 + LOCATIONS.length) % LOCATIONS.length);
-  };
-  const handleNext = () => {
-    setLocationIdx((prev) => (prev + 1) % LOCATIONS.length);
-  };
 
   // 화살표로 이동 시, 선택된 거점이 항상 보이도록 스크롤
   useEffect(() => {
@@ -155,39 +141,16 @@ export default function ShuttleTimetablePage() {
           >수정하기</button>
         )}
       </div>
-      {/* 거점 슬라이드 탭 (한 줄, 좌우 화살표로 이동, 넘치면 가로 스크롤) */}
-      <div className="pt-16 flex items-center justify-center mb-2 select-none">
-        <button onClick={handlePrev} className="pl-6 pr-3 py-1 text-[#5382E0] text-lg font-bold" aria-label="이전 거점">&#60;</button>
-        <div
-          ref={locationTabRef}
-          className="flex gap-2 flex-nowrap w-full max-w-full overflow-x-auto timetable-no-scrollbar"
-          style={{ scrollBehavior: 'smooth' }}
-        >
-          {LOCATIONS.map((loc, idx) => (
-            <button
-              key={loc}
-              ref={el => { selectedBtnRefs.current[idx] = el; }}
-              className={`px-4 py-1 rounded-full border text-sm font-semibold whitespace-nowrap flex-shrink-0 ${location === loc ? 'bg-[#5382E0] text-white border-[#5382E0]' : 'bg-white text-[#5382E0] border-[#5382E0]'}`}
-              style={{ minWidth: 'fit-content' }}
-              onClick={() => setLocationIdx(idx)}
-            >
-              {loc}
-            </button>
-          ))}
-        </div>
-        <button onClick={handleNext} className="pr-6 pl-3 py-1 text-[#5382E0] text-lg font-bold" aria-label="다음 거점">&#62;</button>
-      </div>
-      {/* 출근/퇴근 탭 */}
-      <div className="flex justify-center gap-2 mb-6">
-        {TYPES.map((t) => (
-          <button
-            key={t}
-            className={`px-4 py-1 rounded-full border text-sm font-semibold ${tab === t ? 'bg-[#5382E0] text-white border-[#5382E0]' : 'bg-white text-[#5382E0] border-[#5382E0]'}`}
-            onClick={() => setTab(t)}
-          >
-            {t}
-          </button>
-        ))}
+      {/* SlideTab 컴포넌트로 대체 */}
+      <div className="pt-16">
+        <SlideTab
+          locations={LOCATIONS}
+          locationIdx={locationIdx}
+          onLocationChange={setLocationIdx}
+          tab={tab}
+          onTabChange={setTab}
+          className="w-full"
+        />
       </div>
       {/* 시간표 */}
       <div className="px-4">
@@ -198,15 +161,11 @@ export default function ShuttleTimetablePage() {
             <div key={idx} className="w-full max-w-md bg-[#5382E0] rounded-xl text-white flex flex-col items-center mb-6 py-3 px-4 relative">
               {/* 노선 헤더 */}
               <div className="text-lg font-bold mb-1 text-center w-full">
-                {tab === "출근"
-                  ? `${location} → 아이티센 타워`
-                  : `아이티센 타워 → ${location}`}
+                {LOCATIONS[locationIdx]} → 아이티센 타워
               </div>
               {/* 승/하차 장소 안내 (카드 안쪽, 헤더 아래) */}
               <div className="text-xs text-blue-100 mb-8 w-full text-center">
-                {tab === "출근"
-                  ? `승차 장소: ${item.승차장소}`
-                  : `하차 장소: ${item.하차장소}`}
+                승차 장소: {item.승차장소}
               </div>
               {/* 소요시간 */}
               <div className="text-base font-semibold mb-2 w-full text-center">소요시간: {item.소요시간}</div>
@@ -249,7 +208,7 @@ export default function ShuttleTimetablePage() {
                                     // 빈 값이거나 잘못된 값이면 해당 카드 삭제
                                     setTimetableData(prev => {
                                       const newData = JSON.parse(JSON.stringify(prev));
-                                      const list = newData[tab].find((it: TimetableItem) => it.거점 === location);
+                                      const list = newData[tab].find((it: TimetableItem) => it.거점 === LOCATIONS[locationIdx]);
                                       if (list) {
                                         const removeIdx = item.출발시간.findIndex(obj => Object.values(obj)[0] === '' || Object.values(obj)[0] === editValue);
                                         if (removeIdx !== -1) {
@@ -263,7 +222,7 @@ export default function ShuttleTimetablePage() {
                                   }
                                   setTimetableData(prev => {
                                     const newData = JSON.parse(JSON.stringify(prev));
-                                    const list = newData[tab].find((it: TimetableItem) => it.거점 === location);
+                                    const list = newData[tab].find((it: TimetableItem) => it.거점 === LOCATIONS[locationIdx]);
                                     if (list) {
                                       // 정렬 전 원본 인덱스 찾기
                                       const origIdx = item.출발시간.findIndex(obj => Object.values(obj)[0] === depTime || Object.values(obj)[0] === '');
@@ -293,7 +252,7 @@ export default function ShuttleTimetablePage() {
                                   if (depTime === '') {
                                     setTimetableData(prev => {
                                       const newData = JSON.parse(JSON.stringify(prev));
-                                      const list = newData[tab].find((it: TimetableItem) => it.거점 === location);
+                                      const list = newData[tab].find((it: TimetableItem) => it.거점 === LOCATIONS[locationIdx]);
                                       if (list) {
                                         const removeIdx = item.출발시간.findIndex(obj => Object.values(obj)[0] === '');
                                         if (removeIdx !== -1) {
@@ -347,7 +306,7 @@ export default function ShuttleTimetablePage() {
                                   onClick={() => {
                                     setTimetableData(prev => {
                                       const newData = JSON.parse(JSON.stringify(prev));
-                                      const list = newData[tab].find((it: TimetableItem) => it.거점 === location);
+                                      const list = newData[tab].find((it: TimetableItem) => it.거점 === LOCATIONS[locationIdx]);
                                       if (list) {
                                         // 정렬 전 원본 인덱스 찾기
                                         const origIdx = item.출발시간.findIndex(obj => Object.values(obj)[0] === depTime);
@@ -384,7 +343,7 @@ export default function ShuttleTimetablePage() {
                         if (isCurrentLocationEditing) return;
                         setTimetableData(prev => {
                           const newData = JSON.parse(JSON.stringify(prev));
-                          const list = newData[tab].find((it: TimetableItem) => it.거점 === location);
+                          const list = newData[tab].find((it: TimetableItem) => it.거점 === LOCATIONS[locationIdx]);
                           if (list) {
                             const nextNum = list.출발시간.length + 1;
                             list.출발시간.push({ [`${nextNum}회`]: '' });
@@ -404,8 +363,6 @@ export default function ShuttleTimetablePage() {
       </div>
       {/* 하단바 */}
       <BottomBar />
-      {/* 셔틀 시간표 내에서만 스크롤바 숨김 스타일 */}
-      <style>{timetableScrollbarStyle}</style>
       {/* 하단 고정 완료/취소 바 (수정 모드에서만) */}
       {isEditMode && (
         <div className="fixed bottom-0 left-0 right-0 z-30 bg-white flex h-16 px-4 gap-3 items-center justify-center">
