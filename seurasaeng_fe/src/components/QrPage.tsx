@@ -1,8 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import TopBar from './TopBar';
 
 const QrPage: React.FC = () => {
-  const navigate = useNavigate();
   const [rotate, setRotate] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const start = useRef({ x: 0, y: 0 });
@@ -45,13 +44,7 @@ const QrPage: React.FC = () => {
   return (
     <div className="min-h-[calc(var(--vh,1vh)*100)] bg-neutral-900 flex flex-col items-center justify-center">
       {/* 상단바 */}
-      <div className="fixed left-0 top-0 right-0 z-20 flex items-center h-14 px-4 bg-neutral-900">
-        <button className="absolute left-4" onClick={() => navigate(-1)}>
-          <img src="/back.png" alt="뒤로가기" className="w-6 h-6 invert brightness-0" />
-        </button>
-        <div className="flex-1 text-center font-semibold text-lg text-white">QR 코드</div>
-      </div>
-
+      <TopBar title="QR 코드" bgColorClass="bg-neutral-900" />
       {/* 중앙 카드 */}
       <div className="w-full flex-1 flex flex-col items-center justify-center pt-6">
         <div className="relative flex items-center justify-center">

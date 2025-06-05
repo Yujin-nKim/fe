@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { useState, useRef } from 'react';
 import BottomBar from './BottomBar';
 import inquiries from '../mocks/inquiriesMock';
+import TopBar from './TopBar';
 
 function getStatusBadge(status: string) {
   if (status === '답변완료') {
@@ -63,12 +64,7 @@ export default function MyInquiryPage() {
   return (
     <div className="min-h-screen pb-50 bg-white">
       {/* 상단바 */}
-      <div className="fixed left-0 top-0 right-0 z-20 flex items-center h-14 px-4 bg-[#5382E0]">
-        <button className="absolute left-4" onClick={() => navigate(-1)}>
-          <img src="/back.png" alt="뒤로가기" className="w-6 h-6 invert brightness-0" />
-        </button>
-        <div className="flex-1 text-center font-semibold text-lg text-white">나의 문의 내역</div>
-      </div>
+      <TopBar title="나의 문의 내역" />
       <div className="border-b border-gray-100" />
       {/* 문의 목록 */}
       <div className="flex-1 pl-4 pt-14">

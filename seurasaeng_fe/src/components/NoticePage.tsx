@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import BottomBar from './BottomBar';
 import notices from '../mocks/noticesMock';
+import TopBar from './TopBar';
 
 export default function NoticePage() {
   const navigate = useNavigate();
@@ -8,12 +9,7 @@ export default function NoticePage() {
   return (
     <div className="min-h-screen bg-white pb-40">
       {/* 상단바 */}
-      <div className="fixed left-0 top-0 right-0 z-20 flex items-center h-14 px-4 border-b border-gray-100 bg-[#5382E0]">
-        <button className="absolute left-4" onClick={() => navigate(-1)}>
-          <img src="/back.png" alt="뒤로가기" className="w-6 h-6 invert brightness-0" />
-        </button>
-        <div className="flex-1 text-center font-semibold text-lg text-white">공지사항</div>
-      </div>
+      <TopBar title="공지사항" />
       {/* 공지 리스트 */}
       <div className="pt-14 flex-1 px-4">
         {notices.map(notice => (

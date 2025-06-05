@@ -1,6 +1,6 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import BottomBar from './BottomBar';
+import TopBar from './TopBar';
 import rideHistoryMock from '../mocks/rideHistoryMock';
 
 const formatDate = (dateStr: string) => {
@@ -10,17 +10,10 @@ const formatDate = (dateStr: string) => {
 };
 
 const MyRideHistoryPage: React.FC = () => {
-  const navigate = useNavigate();
-
   return (
     <div className="min-h-screen bg-[#fdfdfe] pb-16">
       {/* 상단바 */}
-      <div className="fixed left-0 top-0 right-0 z-20 flex items-center h-14 px-4 border-b border-gray-100 bg-[#5382E0]">
-        <button className="absolute left-4" onClick={() => navigate(-1)}>
-          <img src="/back.png" alt="뒤로가기" className="w-6 h-6 invert brightness-0" />
-        </button>
-        <div className="flex-1 text-center font-semibold text-lg text-white">나의 탑승 내역</div>
-      </div>
+      <TopBar title="나의 탑승 내역" />
       {/* 탑승 내역 리스트 */}
       <div className="pt-20 flex-1 px-4">
         {rideHistoryMock.map((ride) => (

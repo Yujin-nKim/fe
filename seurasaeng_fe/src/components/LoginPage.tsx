@@ -1,17 +1,11 @@
 import { useNavigate } from "react-router-dom";
+import TopBar from './TopBar';
 
 export default function LoginPage() {
   const navigate = useNavigate();
   return (
     <div className="flex flex-col justify-between items-center bg-[#fdfdfe] pt-6 pb-4">
-      {/* 뒤로가기 버튼 */}
-      <button
-        className="absolute top-4 left-4 z-10 p-2"
-        onClick={() => navigate(-1)}
-        aria-label="뒤로가기"
-      >
-        <img src="/back.png" alt="뒤로가기" className="w-7 h-7" />
-      </button>
+      <TopBar title="로그인" />
       <div className="w-full flex flex-col items-center">
         <h2 className="text-2xl font-bold text-center mb-4">로그인</h2>
         <img

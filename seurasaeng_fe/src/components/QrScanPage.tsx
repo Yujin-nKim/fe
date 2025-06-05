@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { Html5Qrcode } from 'html5-qrcode';
-import { useNavigate } from 'react-router-dom';
+import TopBar from './TopBar';
 
 // 임시 사용자 정보 (실제 서비스에서는 QR 데이터에서 받아와야 함)
 const mockUser = {
@@ -17,7 +17,6 @@ const QrScanPage = () => {
   const [scannedUser, setScannedUser] = useState<typeof mockUser | null>(null);
   const [scanTime, setScanTime] = useState<Date | null>(null);
   const [cameraReady, setCameraReady] = useState(false);
-  const navigate = useNavigate();
   const timeoutRef = useRef<number | null>(null);
   const isScanningRef = useRef(true);
   const hasStartedRef = useRef(false);
@@ -113,12 +112,7 @@ const QrScanPage = () => {
   return (
     <div className="min-h-screen bg-[#fdfdfe] pb-16">
       {/* 상단바 */}
-      <div className="fixed left-0 top-0 right-0 z-20 flex items-center h-14 bg-[#5382E0]">
-        <button className="absolute left-4" onClick={() => navigate(-1)}>
-          <img src="/back.png" alt="뒤로가기" className="w-6 h-6 invert brightness-0" />
-        </button>
-        <div className="flex-1 text-center font-semibold text-lg text-white">QR 코드 스캔</div>
-      </div>
+      <TopBar title="QR 코드 스캔" />
       {/* 카메라 영역만 w-full, 패딩/마진 없이 */}
       <div className="relative w-full mt-14"> {/* relative로 오버레이 기준 */}
         <div

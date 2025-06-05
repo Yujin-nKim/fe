@@ -4,8 +4,8 @@ import KakaoMap from '../components/KakaoMap';
 import { loadKakaoMapSDK } from '../libs/loadKakaoMap';
 import BottomBar from '../components/BottomBar';
 import Chatbot from '../components/Chatbot';
-import { useNavigate } from 'react-router-dom';
 import SlideTab from '../components/SlideTab';
+import TopBar from '../components/TopBar';
 
 // TODO: 테스트용 노선 데이터  - API 연동 후 실제 데이터로 교체할 것
 /**
@@ -61,7 +61,6 @@ export default function EmployeeGPSApp() {
   const locationTabRef = useRef<HTMLDivElement>(null);
   const selectedBtnRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const [showChatbot, setShowChatbot] = useState(false);
-  const navigate = useNavigate();
 
   useEffect(() => {
     loadKakaoMapSDK(() => {
@@ -107,12 +106,7 @@ export default function EmployeeGPSApp() {
   return (
     <div className="min-h-screen bg-[#fdfdfe] flex flex-col relative">
       {/* 상단바 */}
-      <div className="fixed left-0 top-0 right-0 z-20 flex items-center h-14 px-4 border-b border-gray-100 bg-[#5382E0]">
-        <button className="absolute left-4" onClick={() => navigate(-1)}>
-          <img src="/back.png" alt="뒤로가기" className="w-6 h-6 invert brightness-0" />
-        </button>
-        <div className="flex-1 text-center font-semibold text-lg text-white">실시간 셔틀 확인</div>
-      </div>
+      <TopBar title="실시간 셔틀 확인" />
       {/* SlideTab 부모 div을 시간표 페이지와 동일하게 */}
       <div className="pt-16">
         <SlideTab

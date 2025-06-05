@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import TopBar from './TopBar';
 
 function validatePassword(pw: string) {
   // 8자 이상, 영문+숫자+특수문자
@@ -38,12 +39,7 @@ export default function ResetPasswordPage() {
   return (
     <div className="flex flex-col min-h-screen bg-[#fdfdfe]">
       {/* 상단바 */}
-      <div className="fixed left-0 top-0 right-0 z-20 flex items-center h-14 px-4 border-b border-[#5382E0] bg-[#5382E0]">
-        <button className="absolute left-4" onClick={() => navigate(-1)}>
-          <img src="/back.png" alt="뒤로가기" className="w-6 h-6 invert brightness-0" />
-        </button>
-        <div className="flex-1 text-center font-semibold text-lg text-white">비밀번호 재설정</div>
-      </div>
+      <TopBar title="비밀번호 재설정" />
       {/* 중앙 컨텐츠 */}
       <div className="flex-1 flex flex-col items-center justify-center">
         <div className="w-full max-w-xs mx-auto flex flex-col items-center bg-white rounded-xl shadow px-4 py-8 gap-4">

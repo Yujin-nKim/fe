@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import inquiries from "../mocks/inquiriesMock";
 import BottomBar from './BottomBar';
+import TopBar from './TopBar';
 
 const InquiryDetailPage = () => {
   const { id } = useParams();
@@ -29,15 +30,10 @@ const InquiryDetailPage = () => {
   return (
     <div className="max-w-md mx-auto min-h-screen bg-[#fdfdfe] pb-16">
       {/* 상단 바 */}
-      <div className="flex items-center h-14 px-4 bg-[#5382E0] border-b border-[#5382E0] relative">
-        <button className="absolute left-4" onClick={() => navigate(-1)}>
-          <img src="/back.png" alt="뒤로가기" className="w-6 h-6 invert brightness-0" />
-        </button>
-        <span className="flex-1 text-center text-white font-bold text-lg">1:1 문의</span>
-      </div>
+      <TopBar title="1:1 문의" />
 
       {/* 문의 제목 및 시간 */}
-      <div className="px-5 pt-6 pb-2">
+      <div className="px-5 pt-20 pb-2">
         <div className="text-[#5382E0] font-bold text-base mb-1">{inquiry.title}</div>
         <div className="text-xs text-gray-400 mb-4">{formattedDate}</div>
         <span className="inline-block text-xs bg-[#5382E0] text-white rounded px-2 py-0.5 font-semibold mb-2">{inquiry.status}</span>

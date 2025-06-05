@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import BottomBar from './BottomBar';
 import shuttleData from '../mocks/shuttle_schedule.json';
 import SlideTab from './SlideTab';
+import TopBar from './TopBar';
 
 type TimetableItem = {
   거점: string;
@@ -68,7 +68,6 @@ export default function ShuttleTimetablePage() {
     shuttleData as unknown as ShuttleScheduleJson
   );
 
-  const navigate = useNavigate();
   const [locationIdx, setLocationIdx] = useState(0);
 
   const locationTabRef = useRef<HTMLDivElement>(null);
@@ -126,21 +125,22 @@ export default function ShuttleTimetablePage() {
   return (
     <div className="bg-white pb-16" style={{ minHeight: 'calc(var(--vh, 1vh) * 100)' }}>
       {/* 상단바 */}
-      <div className="fixed left-0 top-0 right-0 z-20 flex items-center h-14 px-4 border-b border-gray-100 bg-[#5382E0]">
-        <button className="absolute left-4" onClick={() => navigate(-1)}>
-          <img src="/back.png" alt="뒤로가기" className="w-6 h-6 invert brightness-0" />
-        </button>
-        <div className="flex-1 text-center font-semibold text-lg text-white">셔틀 시간표</div>
-        {!isEditMode && (
-          <button
-            className="absolute right-4 text-white text-sm border border-white rounded px-2 py-1 bg-[#5382E0]"
-            onClick={() => {
-              setOriginalTimetableData(JSON.parse(JSON.stringify(timetableData)));
-              setIsEditMode(true);
-            }}
-          >수정하기</button>
-        )}
-      </div>
+      <TopBar 
+        title="셔틀 시간표" 
+        rightContent={
+          !isEditMode && (
+            <button
+              className="text-white text-sm border border-white rounded px-2 py-1 bg-[#5382E0]"
+              onClick={() => {
+                setOriginalTimetableData(JSON.parse(JSON.stringify(timetableData)));
+                setIsEditMode(true);
+              }}
+            >
+              수정하기
+            </button>
+          )
+        }
+      />
       {/* SlideTab 컴포넌트로 대체 */}
       <div className="pt-16">
         <SlideTab

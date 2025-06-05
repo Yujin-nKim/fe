@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useState, useRef } from 'react';
+import TopBar from './TopBar';
 
 const ROUTES = [
   '정부과천청사역',
@@ -56,12 +57,7 @@ export default function EditProfilePage() {
   return (
     <div className="flex flex-col min-h-screen bg-[#fdfdfe]">
       {/* 상단바 */}
-      <div className="fixed left-0 top-0 right-0 z-20 flex items-center h-14 px-4 border-b border-[#5382E0] bg-[#5382E0]">
-        <button className="absolute left-4" onClick={() => navigate(-1)}>
-          <img src="/back.png" alt="뒤로가기" className="w-6 h-6 invert brightness-0" />
-        </button>
-        <div className="flex-1 text-center font-semibold text-lg text-white">개인정보 수정</div>
-      </div>
+      <TopBar title="개인정보 수정" />
       <div className="flex-1 flex flex-col items-center justify-center pt-14 pb-8">
         <form className="w-full max-w-xs flex flex-col items-center gap-3 bg-white rounded-xl shadow px-4 py-8 mt-4" onSubmit={handleSubmit}>
           {/* 프로필 이미지 */}

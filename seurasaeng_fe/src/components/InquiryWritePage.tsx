@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import TopBar from './TopBar';
 
 export default function MyInquiryWritePage() {
   const navigate = useNavigate();
@@ -13,13 +14,8 @@ export default function MyInquiryWritePage() {
 
   return (
     <div className="fixed inset-0 flex flex-col bg-[#fdfdfe]">
-      <div className="flex items-center h-14 px-4 bg-[#5382E0] border-b border-[#5382E0]">
-        <button className="absolute left-4" onClick={() => navigate(-1)}>
-          <img src="/back.png" alt="뒤로가기" className="w-6 h-6 invert brightness-0" />
-        </button>
-        <span className="flex-1 text-center text-white font-bold text-lg">1:1 문의</span>
-      </div>
-      <div className="flex-1 overflow-y-auto px-5 pt-6">
+      <TopBar title="1:1 문의" />
+      <div className="flex-1 overflow-y-auto px-5 pt-20">
         <div className="mb-6">
           <div className="text-[#5382E0] font-bold text-base mb-2">문의 제목</div>
           <input
