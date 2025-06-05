@@ -15,6 +15,7 @@ import QrScanPage from './components/QrScanPage'
 import ShuttleTimetablePage from './components/ShuttleTimetablePage'
 import AdminPageGps from './pages/AdminPageGps'
 import EmployeeGPSApp from './pages/EmployeePageGps'
+import ResetPasswordPage from './components/ResetPasswordPage'
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
           <Route path="/timetable" element={<ShuttleTimetablePage />} />
           <Route path="/realtime-shuttle" element={<EmployeeGPSApp />} />
           <Route path="/admin/race-gps" element={<AdminPageGps />} />
+          <Route path="/reset-password" element={<ResetPasswordPage />} />
         </Routes>
       </div>
     </BrowserRouter>
