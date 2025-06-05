@@ -15,7 +15,7 @@ export default function RegisterPage() {
               className="flex-1 min-w-0 border border-gray-300 rounded-lg px-3 py-3 focus:outline-none focus:ring-2 focus:ring-blue-200 placeholder:text-gray-400 text-base appearance-none"
               placeholder="example@itcen.com"
             />
-            <button type="button" className="flex-shrink-0 min-w-[72px] px-2 py-3 rounded-lg bg-blue-400 text-white text-sm font-normal hover:bg-blue-500 transition text-base appearance-none">중복확인</button>
+            <button type="button" className="flex-shrink-0 min-w-[72px] px-2 py-3 rounded-lg bg-[#5382E0] text-white text-sm font-normal hover:bg-blue-600 transition text-base appearance-none">중복확인</button>
           </div>
           {/* 인증 코드 확인 */}
           <label className="text-sm font-normal text-black">인증 코드 확인</label>
@@ -25,7 +25,7 @@ export default function RegisterPage() {
               className="flex-1 min-w-0 border border-gray-300 rounded-lg px-3 py-3 focus:outline-none focus:ring-2 focus:ring-blue-200 placeholder:text-gray-400 text-base appearance-none"
               placeholder="인증 코드 입력"
             />
-            <button type="button" className="flex-shrink-0 min-w-[60px] px-2 py-3 rounded-lg bg-blue-400 text-white text-sm font-normal hover:bg-blue-500 transition text-base appearance-none">확인</button>
+            <button type="button" className="flex-shrink-0 min-w-[60px] px-2 py-3 rounded-lg bg-[#5382E0] text-white text-sm font-normal hover:bg-blue-600 transition text-base appearance-none">확인</button>
           </div>
           {/* 이름 */}
           <label className="text-sm font-normal text-black">이름</label>
@@ -50,7 +50,7 @@ export default function RegisterPage() {
           />
           <button
             type="submit"
-            className="w-full py-3 rounded-lg bg-blue-400 text-white text-base font-normal shadow hover:bg-blue-500 transition mt-8"
+            className="w-full py-3 rounded-lg bg-[#5382E0] text-white text-base font-normal shadow hover:bg-blue-600 transition mt-8"
           >
             회원가입
           </button>

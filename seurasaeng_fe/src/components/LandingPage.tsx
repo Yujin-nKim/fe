@@ -19,13 +19,13 @@ export default function LandingPage() {
       </div>
       <div className="w-full flex flex-col gap-3 px-6 mt-8">
         <button
-          className="w-full py-3 rounded-lg bg-blue-400 text-white text-base font-normal shadow hover:bg-blue-500 transition"
+          className="w-full py-3 rounded-lg bg-[#5382E0] text-white text-base font-normal shadow hover:bg-blue-600 transition"
           onClick={() => navigate('/register')}
         >
           회원가입
         </button>
         <button
-          className="w-full py-3 rounded-lg border border-blue-300 text-blue-400 text-base font-normal bg-white hover:bg-blue-50 transition"
+          className="w-full py-3 rounded-lg border border-[#5382E0] text-[#5382E0] text-base font-normal bg-white hover:bg-blue-50 transition"
           onClick={() => navigate('/login')}
         >
           로그인
