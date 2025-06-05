@@ -42,7 +42,7 @@ export default function KakaoMap(props: KakaoMapProps) {
   /* 버스가 현재 운행 중인지를 나타내는 boolean */
   const [isBusOperating, setIsBusOperating] = useState(false); 
   /* 실시간으로 수신하는 GPS 데이터 */
-  const { gpsData, isOperating } = useWebSocket(route ? route.id : null);
+  const { gpsData } = useWebSocket(route ? route.id : null);
 
   // 지도 초기화 
   useEffect(() => {
@@ -187,7 +187,7 @@ const endMarker = new window.kakao.maps.Marker({
         const data = await fetchRouteFromMobilityAPI(points.start, points.end);
         console.log('API 응답 데이터:', data);
 
-        const vertexes = data.routes[0].sections[0].roads.flatMap(road => road.vertexes);
+        const vertexes = data.routes[0].sections[0].roads.flatMap((road: any) => road.vertexes);
         console.log('vertexes:', vertexes);
         
         drawRouteOnMap(points.start, points.end, vertexes);

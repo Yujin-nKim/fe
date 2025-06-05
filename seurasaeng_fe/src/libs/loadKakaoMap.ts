@@ -5,7 +5,7 @@ export function loadKakaoMapSDK(callback: () => void): Promise<void> {
   return new Promise((resolve, reject) => {
     if (document.getElementById('kakao-map-sdk')) {
       resolve();
-      kakao.maps.load(callback); 
+      (window as any).kakao.maps.load(callback);
       return;
     }
 
@@ -16,7 +16,7 @@ export function loadKakaoMapSDK(callback: () => void): Promise<void> {
 
     script.onload = () => {
       console.log("Kakao Maps SDK 로드 완료");
-      kakao.maps.load(() => {
+      (window as any).kakao.maps.load(() => {
         console.log("kakao.maps.load() 완료, 지도 준비됨");
         callback();  // 지도 사용할 준비 끝
       });
