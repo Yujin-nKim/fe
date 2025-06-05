@@ -14,6 +14,7 @@ import MyRideHistoryPage from './components/MyRideHistoryPage'
 import QrScanPage from './components/QrScanPage'
 import ShuttleTimetablePage from './components/ShuttleTimetablePage'
 import AdminPageGps from './pages/AdminPageGps'
+import EmployeeGPSApp from './pages/EmployeePageGps'
 
 function App() {
   return (
@@ -33,7 +34,8 @@ function App() {
           <Route path="/qr-scan" element={<QrScanPage />} />
           <Route path="/my-ride-history" element={<MyRideHistoryPage />} />
           <Route path="/timetable" element={<ShuttleTimetablePage />} />
-           <Route path="/admin/race-gps" element={<AdminPageGps />} />
+          <Route path="/realtime-shuttle" element={<EmployeeGPSApp />} />
+          <Route path="/admin/race-gps" element={<AdminPageGps />} />
         </Routes>
       </div>
     </BrowserRouter>
