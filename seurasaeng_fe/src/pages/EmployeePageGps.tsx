@@ -40,7 +40,7 @@ const mockRouteData: RoutesResponse = {
  */
 const mockFavoriteRouteIds = {
   출근: 4,
-  퇴근: 9,
+  퇴근: 8,
 };
 
 const getLocations = () => {
@@ -53,14 +53,21 @@ const LOCATIONS = getLocations();
 
 export default function EmployeeGPSApp() {
   const [activeTab, setActiveTab] = useState<RouteType>('출근');
-  const [selectedRouteId, setSelectedRouteId] = useState(mockFavoriteRouteIds['출근']);
   const routes = mockRouteData[activeTab];
-  const selectedRoute = routes.find(route => route.id === selectedRouteId) || null;
   const [isMapReady, setIsMapReady] = useState(false);
-  const [locationIdx, setLocationIdx] = useState(0);
   const locationTabRef = useRef<HTMLDivElement>(null);
   const selectedBtnRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const [showChatbot, setShowChatbot] = useState(false);
+
+
+  function getFavoriteRouteIndex(tab: RouteType) {
+    const favoriteId = mockFavoriteRouteIds[tab];
+    const routes = mockRouteData[tab];
+    const index = routes.findIndex(route => route.id === favoriteId);
+    return index !== -1 ? index : 0;
+  }
+  const [locationIdx, setLocationIdx] = useState(() => getFavoriteRouteIndex('출근'));
+  const selectedRoute = routes[locationIdx] || null;
 
   useEffect(() => {
     loadKakaoMapSDK(() => {
@@ -96,7 +103,7 @@ export default function EmployeeGPSApp() {
    */
   const handleTabClick = (tab:RouteType) => {
     setActiveTab(tab);
-    setSelectedRouteId(mockFavoriteRouteIds[tab]);
+    setLocationIdx(getFavoriteRouteIndex(tab));
   }
 
   const handleChatbotToggle = () => {
