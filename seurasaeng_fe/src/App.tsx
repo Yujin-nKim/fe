@@ -17,6 +17,7 @@ import AdminPageGps from './pages/AdminPageGps'
 import EmployeeGPSApp from './pages/EmployeePageGps'
 import ResetPasswordPage from './pages/ResetPasswordPage'
 import EditProfilePage from './pages/EditProfilePage'
+import AdminMainPage from './pages/AdminMainPage'
 
 function App() {
   return (
@@ -40,6 +41,7 @@ function App() {
           <Route path="/admin/race-gps" element={<AdminPageGps />} />
           <Route path="/reset-password" element={<ResetPasswordPage />} />
           <Route path="/edit-profile" element={<EditProfilePage />} />
+          <Route path="/admin" element={<AdminMainPage />} />
         </Routes>
       </div>
     </BrowserRouter>
