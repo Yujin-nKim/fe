@@ -3,20 +3,7 @@ import BottomBar from '../components/BottomBar';
 import shuttleData from '../mocks/shuttle_schedule.json';
 import SlideTab from '../components/SlideTab';
 import TopBar from '../components/TopBar';
-
-type TimetableItem = {
-  거점: string;
-  차량규격: string;
-  소요시간: string;
-  승차장소?: string;
-  하차장소?: string;
-  출발시간: { [key: string]: string }[];
-};
-
-interface ShuttleScheduleJson {
-  출근: TimetableItem[];
-  퇴근: TimetableItem[];
-}
+import type { TimetableItem, ShuttleScheduleJson } from '../types/ShuttleTypes';
 
 // Extract unique locations from 출근 and 퇴근
 const getLocations = () => {

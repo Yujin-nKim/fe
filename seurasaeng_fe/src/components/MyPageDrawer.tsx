@@ -1,11 +1,6 @@
 import React, { useRef, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
-
-interface MyPageDrawerProps {
-  open: boolean;
-  onClose: () => void;
-  onDrag: (dragX: number) => void;
-}
+import type { MyPageDrawerProps } from '../types/ComponentTypes';
 
 const DRAG_CLOSE_THRESHOLD = 80; // px
 const MAX_OVERLAY_OPACITY = 0.18;

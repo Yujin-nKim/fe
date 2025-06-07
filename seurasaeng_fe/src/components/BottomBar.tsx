@@ -1,11 +1,7 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import { HiHome, HiClipboardDocumentList } from 'react-icons/hi2';
 import { FaBusAlt } from 'react-icons/fa';
-
-interface BottomBarProps {
-  transform?: string;
-  transition?: string;
-}
+import type { BottomBarProps } from '../types/ComponentTypes';
 
 export default function BottomBar({ transform, transition }: BottomBarProps) {
   const navigate = useNavigate();

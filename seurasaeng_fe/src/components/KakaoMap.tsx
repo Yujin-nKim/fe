@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
-import type { RouteType, Route } from '../types/RouteType';
 import useWebSocket from '../hooks/useSocketReceive';
 import { MOBILITY_API_KEY } from '../constants/env';
 import { API } from '../constants/api';
+import type { KakaoMapProps } from '../types/ComponentTypes';
 
 declare global {
   interface Window {
@@ -21,16 +21,7 @@ const START_MARKER_IMAGE = '/map-markers/start-marker.png';
 const END_MARKER_IMAGE = '/map-markers/end-marker.png';
 const BUS_MARKER_IMAGE = '/map-markers/bus-marker-blue.png';
 
-// props 타입
-interface KakaoMapProps {
-  route: Route | null; // 선택한 노선 전체 정보
-  activeTab: RouteType; // 출근/퇴근 여부
-}
-
-export default function KakaoMap(props: KakaoMapProps) {
-
-  const route = props.route;
-  const activeTab = props.activeTab;
+export default function KakaoMap({ route, activeTab }: KakaoMapProps) {
 
   // 카카오 맵을 띄울 HTML div 참조
   const mapRef = useRef<HTMLDivElement>(null);

@@ -8,7 +8,7 @@ interface DropdownProps {
   disabled?: boolean; // 비활성화 여부 (선택적)
 }
 
-export function Dropdown(props: DropdownProps) {
+export default function Dropdown(props: DropdownProps) {
   return (
     <select
       value={props.selectedValue}
