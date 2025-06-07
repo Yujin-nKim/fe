@@ -1,6 +1,6 @@
 import { useRef, useCallback } from "react";
-import { Client } from "@stomp/stompjs";
-import SockJS from "sockjs-client";
+import { Client, type IMessage } from "@stomp/stompjs";
+// import SockJS from "sockjs-client";
 import { SOCKET_URL } from "../constants/env";
 
 // Socket disconnect 여부 저장하는 변수
@@ -24,17 +24,37 @@ export function useSocket(onMaxRetryExceeded?: () => void): UseSocketReturn {
   const connectSocket = useCallback((): Promise<void> => {
     return new Promise((resolve, reject) => {
       manualDisconnect = false; // 새 연결 시작 시 수동 disconnect 플래그 초기화
+
+      const token = localStorage.getItem("accessToken");
+
+      if (!token) {
+        console.error("토큰이 없습니다.");
+        reject(new Error("No token"));
+        return;
+      }
       
-      const socket = new SockJS(SOCKET_URL);
       const client = new Client({
-        webSocketFactory: () => socket,
+        brokerURL: SOCKET_URL,
         reconnectDelay: 0,
         debug: (msg) => console.log("[STOMP]", msg),
+
+        connectHeaders: {
+          Authorization: `Bearer ${token}`, 
+        },
 
         // WebSocket 연결 성공 시
         onConnect: () => {
           console.log("WebSocket 연결 성공");
           retryCountRef.current = 0; // 재연결 시도 횟수 초기화
+
+                    // ✅ 커스텀 에러 채널 구독 추가
+          client.subscribe("/queue/errors", (message: IMessage) => {
+            const errorMessage = message.body;
+            console.error("서버에서 받은 WebSocket 에러:", errorMessage);
+            alert(`에러 발생: ${errorMessage}`);
+          });
+
+
           resolve(); // 연결 성공: Promise 성공 처리
         },
 

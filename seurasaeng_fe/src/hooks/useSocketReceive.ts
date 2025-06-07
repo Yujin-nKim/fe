@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
 import { Client, type StompSubscription } from '@stomp/stompjs';
-import SockJS from 'sockjs-client';
 import { SOCKET_URL } from '../constants/env';
 import { API } from '../constants/api';
 
@@ -34,10 +33,16 @@ export default function useWebSocket(routeId: number | null) {
   const MAX_RETRY = 5;
 
   const connect = () => {
-    const socket = new SockJS(SOCKET_URL);
+    const token = localStorage.getItem('accessToken');
+
     const client = new Client({
-      webSocketFactory: () => socket,
+      brokerURL: SOCKET_URL,
       reconnectDelay: 0,
+
+      connectHeaders: {
+          Authorization: `Bearer ${token}`, 
+        },
+
       onConnect: () => {
         console.log("WebSocket 연결됨");
         retryCountRef.current = 0;
@@ -45,6 +50,8 @@ export default function useWebSocket(routeId: number | null) {
           subscribeRoute(routeId);
         }
       },
+
+
       onWebSocketClose: () => {
         console.warn("WebSocket 연결 끊김");
         if (retryCountRef.current < MAX_RETRY) {
@@ -57,6 +64,8 @@ export default function useWebSocket(routeId: number | null) {
           setGpsData(null);
         }
       },
+
+
       onStompError: (frame) => {
         console.error("STOMP 오류", frame);
       },
@@ -69,7 +78,7 @@ export default function useWebSocket(routeId: number | null) {
   const subscribeRoute = (routeId: number) => {
     if (!clientRef.current) return;
 
-    const topic = API.websocket.destination(String(routeId));
+    const topic = API.websocket.topic(String(routeId));
 
     subscriptionRef.current?.unsubscribe();
 
