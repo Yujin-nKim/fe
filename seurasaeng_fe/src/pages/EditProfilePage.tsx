@@ -7,6 +7,7 @@ const ROUTES = [
   '이수역',
   '사당역',
   '금정역',
+  '양재역',
 ];
 
 export default function EditProfilePage() {
