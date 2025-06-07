@@ -31,10 +31,6 @@ export default function AdminMainPage() {
             <img src="/schedule.png" alt="시간표 관리" className="w-8 h-8 mb-2" />
             <span className="font-bold text-base text-[#5382E0]">시간표 관리</span>
           </button>
-          <button className="bg-[#DEE9FF] rounded-xl p-4 flex flex-col items-center shadow-sm min-h-[90px] col-span-2" onClick={() => navigate('/admin/qr-scan')}>
-            <img src="/qr.png" alt="QR 스캔" className="w-8 h-8 mb-2" />
-            <span className="font-bold text-base text-[#5382E0]">QR 스캔</span>
-          </button>
         </div>
       </div>
       <BottomBar />
