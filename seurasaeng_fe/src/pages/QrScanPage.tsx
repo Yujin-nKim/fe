@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { Html5Qrcode } from 'html5-qrcode';
-import TopBar from './TopBar';
+import TopBar from '../components/TopBar';
 
 // 임시 사용자 정보 (실제 서비스에서는 QR 데이터에서 받아와야 함)
 const mockUser = {

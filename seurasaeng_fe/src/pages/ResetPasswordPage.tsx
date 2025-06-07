@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import TopBar from './TopBar';
+import TopBar from '../components/TopBar';
 
 function validatePassword(pw: string) {
   // 8자 이상, 영문+숫자+특수문자

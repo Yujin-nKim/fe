@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import TopBar from './TopBar';
+import TopBar from '../components/TopBar';
 
 export default function MyInquiryWritePage() {
   const navigate = useNavigate();

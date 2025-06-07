@@ -1,6 +1,6 @@
 import React from 'react';
-import BottomBar from './BottomBar';
-import TopBar from './TopBar';
+import BottomBar from '../components/BottomBar';
+import TopBar from '../components/TopBar';
 import rideHistoryMock from '../mocks/rideHistoryMock';
 
 const formatDate = (dateStr: string) => {

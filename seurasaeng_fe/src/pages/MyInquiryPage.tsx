@@ -1,8 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 import { useState, useRef } from 'react';
-import BottomBar from './BottomBar';
+import BottomBar from '../components/BottomBar';
 import inquiries from '../mocks/inquiriesMock';
-import TopBar from './TopBar';
+import TopBar from '../components/TopBar';
 
 function getStatusBadge(status: string) {
   if (status === '답변완료') {

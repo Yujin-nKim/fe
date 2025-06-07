@@ -1,9 +1,9 @@
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import Chatbot from './Chatbot';
-import MyPageDrawer from './MyPageDrawer';
-import BottomBar from './BottomBar';
-import PopupModal from './PopupModal';
+import Chatbot from '../components/Chatbot';
+import MyPageDrawer from '../components/MyPageDrawer';
+import BottomBar from '../components/BottomBar';
+import PopupModal from '../components/PopupModal';
 import notices from '../mocks/noticesMock';
 
 // 드로어 관련 상수

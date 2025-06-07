@@ -1,4 +1,4 @@
-import TopBar from './TopBar';
+import TopBar from '../components/TopBar';
 
 export default function RegisterPage() {
   return (

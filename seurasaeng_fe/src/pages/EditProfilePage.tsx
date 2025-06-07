@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useState, useRef } from 'react';
-import TopBar from './TopBar';
+import TopBar from '../components/TopBar';
 
 const ROUTES = [
   '정부과천청사역',

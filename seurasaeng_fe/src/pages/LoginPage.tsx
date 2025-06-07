@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import TopBar from './TopBar';
+import TopBar from '../components/TopBar';
 
 export default function LoginPage() {
   const navigate = useNavigate();

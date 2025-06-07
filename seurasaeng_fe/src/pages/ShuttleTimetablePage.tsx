@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
-import BottomBar from './BottomBar';
+import BottomBar from '../components/BottomBar';
 import shuttleData from '../mocks/shuttle_schedule.json';
-import SlideTab from './SlideTab';
-import TopBar from './TopBar';
+import SlideTab from '../components/SlideTab';
+import TopBar from '../components/TopBar';
 
 type TimetableItem = {
   거점: string;

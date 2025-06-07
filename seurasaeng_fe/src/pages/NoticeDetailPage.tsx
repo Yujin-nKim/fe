@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom';
-import BottomBar from './BottomBar';
-import TopBar from './TopBar';
+import BottomBar from '../components/BottomBar';
+import TopBar from '../components/TopBar';
 import notices from '../mocks/noticesMock';
 
 export default function NoticeDetailPage() {

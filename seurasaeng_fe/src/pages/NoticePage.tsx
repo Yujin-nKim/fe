@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
-import BottomBar from './BottomBar';
+import BottomBar from '../components/BottomBar';
 import notices from '../mocks/noticesMock';
-import TopBar from './TopBar';
+import TopBar from '../components/TopBar';
 
 export default function NoticePage() {
   const navigate = useNavigate();

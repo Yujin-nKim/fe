@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import TopBar from './TopBar';
+import TopBar from '../components/TopBar';
 
 const QrPage: React.FC = () => {
   const [rotate, setRotate] = useState({ x: 0, y: 0 });
