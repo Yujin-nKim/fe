@@ -11,59 +11,25 @@ import BottomBar from '../components/BottomBar';
 import { useNavigate } from 'react-router-dom';
 
 
-// TODO: 테스트용 노선 데이터  - API 연동 후 실제 데이터로 교체할 것
-/**
- * 테스트용 노선 데이터
- * 
- * API 연동 전까지 임시로 사용되는 데이터
- * 
- */
-const initialOptions: DropdownOption[] = [
-      {
+const ResponseToDropdownOptions = (data: any[]): DropdownOption[] => {
+  const initialOption: DropdownOption = {
     value: "0",
     label: "선택해주세요.",
     departure: "",
     destination: "",
-    boarding_location: "",
-    dropoff_location: "",
     is_commute: "",
-    duration_minutes: "",
-    total_seats: "",
-  },
-  {
-    value: "1",
-    label: "사당 → 아이티센 타워",
-    departure: "사당",
-    destination: "아이티센 타워",
-    boarding_location: "사당역 1번 출구 앞",
-    dropoff_location: "아이티센 타워 G 앞",
-    is_commute: "출근",
-    duration_minutes: "45",
-    total_seats: "40",
-  },
-  {
-    value: "2",
-    label: "양재 → 아이티센 타워",
-    departure: "양재",
-    destination: "아이티센 타워",
-    boarding_location: "양재역 12번 출구 버스정류장",
-    dropoff_location: "아이티센 타워 G 앞",
-    is_commute: "출근",
-    duration_minutes: "35",
-    total_seats: "40",
-  },
-  {
-    value: "3",
-    label: "아이티센 타워 → 정부과천청사역",
-    departure: "아이티센 타워",
-    destination: "정부과천청사역",
-    boarding_location: "아이티센 타워 G 앞",
-    dropoff_location: "정부과천청사역 7번 출구 앞",
-    is_commute: "퇴근",
-    duration_minutes: "40",
-    total_seats: "40",
-  }
-];
+  };
+
+  const mappedOptions: DropdownOption[] = data.map((item) => ({
+    value: item.id.toString(),
+    label: `[${item.commute ? '출근' : '퇴근'}] ${item.departureName} → ${item.destinationName}`,
+    departure: item.departureName,
+    destination: item.destinationName,
+    is_commute: item.commute ? "출근" : "퇴근",
+  }));
+
+  return [initialOption, ...mappedOptions];
+};
 
 function AdminPage() {
   const navigate = useNavigate();
@@ -72,7 +38,7 @@ function AdminPage() {
   // 마지막 수집된 GPS 데이터 저장 
   const latestGpsRef = useRef<GpsPayload | null>(null);
   // 선택된 노선 ID
-  const [selectedValue, setSelectedValue] = useState<string>(initialOptions[0].value);
+  const [selectedValue, setSelectedValue] = useState<string>("0");
   // 운행 중 여부 
   const [isOperating, setIsOperating] = useState<boolean>(false);
   // 현재 상태 메시지
@@ -82,6 +48,8 @@ function AdminPage() {
 
   // GPS 위치 수집 hook
   const { location, error, isLoading, fetchLocation } = useGeoLocation();
+
+  const [options, setOptions] = useState<DropdownOption[]>([]);
 
 
       const handleMaxRetryExceeded = () => {
@@ -99,6 +67,21 @@ function AdminPage() {
 
     // WebSocket 연결 hook
   const { stompClientRef, connectSocket, disconnectSocket } = useSocket(handleMaxRetryExceeded);
+
+    useEffect(() => {
+    const fetchRouteOptions = async () => {
+      try {
+        const response = await apiClient.get(API.routes.list);
+        const data = response.data;
+        const mappedOptions = ResponseToDropdownOptions(data);
+        setOptions(mappedOptions);
+      } catch (err) {
+        console.error("노선 목록 가져오기 실패:", err);
+      }
+    };
+
+    fetchRouteOptions();
+  }, []);
 
   // 노선 선택 변경 핸들러
   const handleSelectChange = (event: ChangeEvent<HTMLSelectElement>) => {
@@ -213,7 +196,7 @@ function AdminPage() {
   }, [location, error, isLoading, isOperating, selectedValue]);
 
   // 현재 선택된 노선 객체 가져옴
-  const selectedOption = initialOptions.find(option => option.value === selectedValue);
+  const selectedOption = options.find(option => option.value === selectedValue);
 
   // 버튼 활성화 조건
   const isStartDisabled = isOperating || isLoading || !selectedValue || selectedValue === "0";
@@ -232,7 +215,7 @@ function AdminPage() {
             onChange={handleSelectChange}
             disabled={isOperating || isLoading}
           >
-            {initialOptions.map(option => (
+            {options.map(option => (
               <option key={option.value} value={option.value}>{option.label}</option>
             ))}
           </select>
@@ -249,12 +232,8 @@ function AdminPage() {
               <span className="font-semibold text-gray-800">{selectedOption.destination}</span>
             </div>
             <div className="flex justify-between text-sm">
-              <span className="text-gray-600">소요 시간</span>
-              <span className="font-semibold text-gray-800">{selectedOption.duration_minutes ? `약 ${selectedOption.duration_minutes}분` : '-'}</span>
-            </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-gray-600">버스 정원</span>
-              <span className="font-semibold text-gray-800">{selectedOption.total_seats ? `${selectedOption.total_seats}승` : '-'}</span>
+              <span className="text-gray-600">출/퇴근</span>
+              <span className="font-semibold text-gray-800">{selectedOption.is_commute}</span>
             </div>
           </div>
         )}

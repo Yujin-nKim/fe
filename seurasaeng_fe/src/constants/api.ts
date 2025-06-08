@@ -14,5 +14,6 @@ export const API = {
   },
   routes: {
     endOperation: (routeId: string) => `/route/${routeId}/end`,
+    list: '/shuttles',
   },
 };
