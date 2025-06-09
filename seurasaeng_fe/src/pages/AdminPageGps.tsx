@@ -50,10 +50,8 @@ function AdminPage() {
   const { location, error, isLoading, fetchLocation } = useGeoLocation();
 
   const [options, setOptions] = useState<DropdownOption[]>([]);
-
-
-      const handleMaxRetryExceeded = () => {
-              console.log("재연결 실패로 운행 종료 처리");
+  const handleMaxRetryExceeded = () => {
+    console.log("재연결 실패로 운행 종료 처리");
 
     // GPS 수집 인터벌 정리
     if (intervalRef.current) {
@@ -131,8 +129,11 @@ function AdminPage() {
     try {
       await apiClient.post(API.routes.endOperation(selectedValue));
       console.log("운행 종료 API 호출 완료");
+
+    await apiClient.delete(API.routes.countDelete(selectedValue));
+    console.log("탑승 인원 초기화 API 호출 완료");
     } catch (err) {
-      console.error("운행 종료 API 호출 실패", err);
+      console.error("운행 종료/탑승 인원 초기화 API 호출 실패", err);
     }
 
     disconnectSocket(); // WebSocket 연결 종료
