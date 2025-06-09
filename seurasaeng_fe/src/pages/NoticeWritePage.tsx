@@ -16,7 +16,7 @@ export default function NoticeWritePage() {
 
   return (
     <div className="fixed inset-0 flex flex-col bg-[#fdfdfe]">
-      <TopBar title="공지사항 추가" />
+      <TopBar title="공지사항 관리" />
       <div className="flex-1 overflow-y-auto px-5 pt-20">
         <div className="mb-6">
           <div className="text-[#5382E0] font-bold text-base mb-2">공지 제목</div>

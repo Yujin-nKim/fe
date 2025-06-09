@@ -55,7 +55,7 @@ export default function NoticePage({ isAdmin = false }) {
   return (
     <div className="min-h-screen bg-white pb-40">
       {/* 상단바 */}
-      <TopBar title="공지사항" />
+      <TopBar title={isAdmin ? "공지사항 관리" : "공지사항"} />
       {/* 공지 리스트 */}
       <div className="pt-14 flex-1 px-4">
         {notices.map(notice => {
