@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import type { RouteType, RoutesResponse } from '../types/RouteType';
 import KakaoMap from '../components/KakaoMap';
 import { loadKakaoMapSDK } from '../libs/loadKakaoMap';
@@ -6,76 +6,101 @@ import BottomBar from '../components/BottomBar';
 import Chatbot from '../components/Chatbot';
 import SlideTab from '../components/SlideTab';
 import TopBar from '../components/TopBar';
+import apiClient from '../libs/axios'; // 네 API 클라이언트 import
+import {API} from '../constants/api'; // API 엔드포인트 상수
 
-// TODO: 테스트용 노선 데이터  - API 연동 후 실제 데이터로 교체할 것
-/**
- * 테스트용 노선 데이터
- * 
- * API 연동 전까지 임시로 사용되는 데이터
- * 
- */
-const mockRouteData: RoutesResponse = {
-  출근: [
-    { id: 1, name: '정부과천청사역' , latitude: 37.4254, longitude: 126.9892},
-    { id: 2, name: '양재역', latitude: 37.4837, longitude: 127.0354},
-    { id: 3, name: '사당역', latitude: 37.4754 , longitude: 126.9814},
-    { id: 4, name: '이수역', latitude: 37.4854 , longitude: 126.9821},
-    { id: 5, name: '금정역', latitude: 37.3716 , longitude: 126.9435},
-  ],
-  퇴근: [
-    { id: 6, name: '정부과천청사역',  latitude: 37.4254, longitude: 126.9892},
-    { id: 7, name: '양재역', latitude: 37.4837, longitude: 127.0354},
-    { id: 8, name: '사당역', latitude: 37.4754 , longitude: 126.9814},
-    { id: 9, name: '이수역', latitude: 37.4854 , longitude: 126.9821},
-    { id: 10, name: '금정역', latitude: 37.3716 , longitude: 126.9435},
-  ],
-};
-
-// TODO: 테스트용 즐겨찾기 데이터  - API 연동 후 실제 데이터로 교체할 것
-/**
- * 테스트용 즐겨찾기 데이터
- * 
- * API 연동 전까지 임시로 사용되는 데이터
- * 
- */
+// TODO: 즐겨찾기 데이터 - API 연동 전 하드코딩
 const mockFavoriteRouteIds = {
   출근: 4,
   퇴근: 8,
 };
 
-const getLocations = () => {
-  const go = mockRouteData["출근"].map((item) => item.name);
-  const back = mockRouteData["퇴근"].map((item) => item.name);
-  return Array.from(new Set([...go, ...back]));
-};
+// 위치 정보 포함 노선 목록 조회 API 호출 함수
+const fetchRouteData = async (): Promise<RoutesResponse> => {
+  const response = await apiClient.get(API.routes.listWithLocation);
+  const data = response.data; 
 
-const LOCATIONS = getLocations();
+  // 출근/퇴근 분리
+  const commuteRoutes = data.filter((item: any) => item.commute === true);
+  const offworkRoutes = data.filter((item: any) => item.commute === false);
+
+  // RoutesResponse 형태로 변환
+  const formattedRoutes: RoutesResponse = {
+    출근: commuteRoutes.map((item: any) => ({
+      id: item.id,
+      name: item.departureName,
+      latitude: item.departureLatitude,
+      longitude: item.departureLongitude,
+    })),
+    퇴근: offworkRoutes.map((item: any) => ({
+      id: item.id,
+      name: item.destinationName,
+      latitude: item.destinationLatitude,
+      longitude: item.destinationLongitude,
+    })),
+  };
+
+  return formattedRoutes;
+};
 
 export default function EmployeeGPSApp() {
   const [activeTab, setActiveTab] = useState<RouteType>('출근');
-  const routes = mockRouteData[activeTab];
   const [isMapReady, setIsMapReady] = useState(false);
+  const [routeData, setRouteData] = useState<RoutesResponse | null>(null);
+  const [loading, setLoading] = useState(true);
+
   const locationTabRef = useRef<HTMLDivElement>(null);
   const selectedBtnRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const [showChatbot, setShowChatbot] = useState(false);
 
-
-  function getFavoriteRouteIndex(tab: RouteType) {
-    const favoriteId = mockFavoriteRouteIds[tab];
-    const routes = mockRouteData[tab];
-    const index = routes.findIndex(route => route.id === favoriteId);
-    return index !== -1 ? index : 0;
-  }
-  const [locationIdx, setLocationIdx] = useState(() => getFavoriteRouteIndex('출근'));
-  const selectedRoute = routes[locationIdx] || null;
+  // 위치 정보 포함 노선 목록 조회 API 호출
+  useEffect(() => {
+    fetchRouteData()
+      .then((data) => {
+        setRouteData(data);
+      })
+      .catch((error) => {
+        console.error('[API 호출 에러] Error fetching route data:', error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, []);
 
   useEffect(() => {
     loadKakaoMapSDK(() => {
       setIsMapReady(true);
     }).catch((error) => {
-      console.error('Kakao Maps SDK 로드 실패:', error);
+      console.error('[Kakao Map 로드 실패] Kakao Maps SDK 로드 실패:', error);
     });
   }, []);
+
+  const routes = routeData ? routeData[activeTab] : [];
+
+  function getFavoriteRouteIndex(tab: RouteType) {
+    if (!routeData) return 0;
+    const favoriteId = mockFavoriteRouteIds[tab];
+    const routes = routeData[tab];
+    const index = routes.findIndex(route => route.id === favoriteId);
+    return index !== -1 ? index : 0;
+  }
+
+  const [locationIdx, setLocationIdx] = useState(0);
+
+  useEffect(() => {
+    if (routeData) {
+      setLocationIdx(getFavoriteRouteIndex(activeTab));
+    }
+  }, [routeData, activeTab]);
+
+  const selectedRoute = routes[locationIdx] || null;
+
+  const locations = useMemo(() => {
+    if (!routeData) return [];
+    const go = routeData["출근"].map((item) => item.name);
+    const back = routeData["퇴근"].map((item) => item.name);
+    return Array.from(new Set([...go, ...back]));
+  }, [routeData]);
 
   useEffect(() => {
     const btn = selectedBtnRefs.current[locationIdx];
@@ -84,40 +109,31 @@ export default function EmployeeGPSApp() {
     }
   }, [locationIdx]);
 
-  // 디자인용: 현재 탑승 인원 mock
-  const currentCount = 10;
-  const maxCount = 45;
-
-  // 색상 결정 함수 (QrScanPage와 동일)
-  const getCountColor = (count: number) => {
-    if (count <= 15) return 'text-green-600';
-    if (count <= 30) return 'text-orange-500';
-    return 'text-red-600';
-  };
-
-  /**
-   * 탭 클릭 시 호출되는 핸들러
-   *  
-   * @param tab - 선택된 탭 ('출근' | '퇴근')
-   * @description 선택한 탭을 활성화하고, 선택된 노선 ID를  즐겨찾기 ID로 활성화
-   */
-  const handleTabClick = (tab:RouteType) => {
+  const handleTabClick = (tab: RouteType) => {
     setActiveTab(tab);
-    setLocationIdx(getFavoriteRouteIndex(tab));
-  }
+    if (routeData) {
+      setLocationIdx(getFavoriteRouteIndex(tab));
+    }
+  };
 
   const handleChatbotToggle = () => {
     setShowChatbot((v) => !v);
   };
 
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        로딩 중...
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#fdfdfe] flex flex-col relative">
-      {/* 상단바 */}
       <TopBar title="실시간 셔틀 확인" />
-      {/* SlideTab 부모 div을 시간표 페이지와 동일하게 */}
       <div className="pt-16">
         <SlideTab
-          locations={LOCATIONS}
+          locations={locations}
           locationIdx={locationIdx}
           onLocationChange={setLocationIdx}
           tab={activeTab}
@@ -125,20 +141,15 @@ export default function EmployeeGPSApp() {
           className="w-full"
         />
       </div>
-      {/* 지도 영역, 탑승 인원 등 기존 코드 유지 */}
       <div className="flex-1 flex flex-col items-center justify-start pb-24 w-full max-w-xl mx-auto px-4">
         <div className="w-full aspect-square overflow-hidden shadow mb-6 bg-gray-100 flex items-center justify-center">
-          {isMapReady ? (
+          {isMapReady && selectedRoute ? (
             <KakaoMap route={selectedRoute} activeTab={activeTab} />
           ) : (
             <div>지도를 불러오는 중입니다...</div>
           )}
         </div>
-        <div className="w-full text-center text-base font-bold mb-2">
-          현재 탑승인원 : <span className={getCountColor(currentCount)}>{currentCount}</span> / {maxCount}
-        </div>
       </div>
-      {/* 오른쪽 아래 챗봇 버튼 */}
       <button
         onClick={handleChatbotToggle}
         className="fixed bottom-20 right-4 z-30"
@@ -147,7 +158,6 @@ export default function EmployeeGPSApp() {
         <img src="/chat-bubble.png" alt="챗봇" className="w-16 h-16" />
       </button>
       {showChatbot && <Chatbot onClose={() => setShowChatbot(false)} />}
-      {/* 하단바 */}
       <BottomBar />
     </div>
   );
