@@ -50,31 +50,34 @@ const InquiryDetailPage = ({ isAdmin = false }) => {
       </div>
 
       {/* 문의 내용 */}
-      <div className="mx-5 mb-8 bg-[#DEE9FF] border border-[#5382E0] rounded-xl p-4 text-gray-800 text-[15px] whitespace-pre-line">
+      <div className="mx-5 mb-8 border border-[#5382E0] rounded-xl p-4 text-gray-800 text-[15px] whitespace-pre-line">
         {inquiry.content}
       </div>
 
       {/* 답변 */}
       {inquiry.answer && (
-        <div className="mx-5 mb-2 bg-white border border-[#DEE9FF] rounded-xl p-4 text-gray-800 text-[15px] whitespace-pre-line">
-          {inquiry.answer}
-          {inquiry.answerDate && (
-            <div className="mt-3 text-xs text-gray-400">
-              답변일: {(() => {
-                // answerDate가 yyyy-MM-dd HH:mm 또는 yyyy-MM-dd HH:mm:ss 등 -로 되어 있으면 .으로 변환
-                const match = inquiry.answerDate.match(/(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2})/);
-                if (match) {
-                  return `${match[1]}.${match[2]}.${match[3]} ${match[4]}:${match[5]}`;
-                }
-                return inquiry.answerDate;
-              })()}
-            </div>
-          )}
-        </div>
+        <>
+          <div className="mx-5 text-xs text-gray-400 mb-1 font-semibold">관리자 답변</div>
+          <div className="mx-5 mb-2 bg-white border border-gray-400 rounded-xl p-4 text-gray-800 text-[15px] whitespace-pre-line">
+            {inquiry.answer}
+            {inquiry.answerDate && (
+              <div className="mt-3 text-xs text-gray-400">
+                답변일: {(() => {
+                  // answerDate가 yyyy-MM-dd HH:mm 또는 yyyy-MM-dd HH:mm:ss 등 -로 되어 있으면 .으로 변환
+                  const match = inquiry.answerDate.match(/(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2})/);
+                  if (match) {
+                    return `${match[1]}.${match[2]}.${match[3]} ${match[4]}:${match[5]}`;
+                  }
+                  return inquiry.answerDate;
+                })()}
+              </div>
+            )}
+          </div>
+        </>
       )}
       {isAdmin && !inquiry.answer && (
         <div className="mb-2 bg-white rounded-xl p-4 text-gray-800 text-[15px]">
-          <div className="mb-2 text-gray-400 font-semibold">답변 작성</div>
+          <div className="mb-2 text-xs text-gray-400 font-semibold">답변 작성</div>
           <textarea
             value={answer}
             onChange={e => setAnswer(e.target.value)}
