@@ -18,6 +18,7 @@ import EmployeeGPSApp from './pages/EmployeePageGps'
 import ResetPasswordPage from './pages/ResetPasswordPage'
 import EditProfilePage from './pages/EditProfilePage'
 import AdminMainPage from './pages/AdminMainPage'
+import NoticeWritePage from './pages/NoticeWritePage'
 
 function App() {
   return (
@@ -42,6 +43,8 @@ function App() {
           <Route path="/reset-password" element={<ResetPasswordPage />} />
           <Route path="/edit-profile" element={<EditProfilePage />} />
           <Route path="/admin" element={<AdminMainPage />} />
+          <Route path="/admin/notice" element={<NoticePage isAdmin={true} />} />
+          <Route path="/admin/notice/write" element={<NoticeWritePage />} />
         </Routes>
       </div>
     </BrowserRouter>
