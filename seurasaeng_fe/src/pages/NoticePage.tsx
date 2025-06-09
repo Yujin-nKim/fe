@@ -12,6 +12,11 @@ export default function NoticePage({ isAdmin = false }) {
   const [startY, setStartY] = useState(0);
   const [isScrolling, setIsScrolling] = useState(false);
 
+  // 버튼 관련 상수 (중복 제거)
+  const BUTTON_WIDTH = 80; // px, w-20
+  const BUTTON_COUNT = 2;
+  const BUTTONS_TOTAL_WIDTH = BUTTON_WIDTH * BUTTON_COUNT;
+
   // 슬라이드 시작
   const handleTouchStart = (e: React.TouchEvent, id: number) => {
     startXRef.current = e.touches[0].clientX - (dragXMap[id] || 0);
@@ -31,14 +36,15 @@ export default function NoticePage({ isAdmin = false }) {
       return;
     }
     if (isScrolling) return;
-    setDragXMap(prev => ({ ...prev, [id]: Math.min(0, Math.max(deltaX, -80)) }));
+    setDragXMap(prev => ({ ...prev, [id]: Math.min(0, Math.max(deltaX, -BUTTONS_TOTAL_WIDTH)) }));
   };
 
   // 슬라이드 끝
   const handleTouchEnd = (id: number) => {
     const dragX = dragXMap[id] || 0;
-    if (dragX < -40) {
-      setDragXMap(prev => ({ ...prev, [id]: -80 }));
+    const THRESHOLD = -BUTTONS_TOTAL_WIDTH / 2;
+    if (dragX < THRESHOLD) {
+      setDragXMap(prev => ({ ...prev, [id]: -BUTTONS_TOTAL_WIDTH }));
     } else {
       setDragXMap(prev => ({ ...prev, [id]: 0 }));
     }
@@ -85,18 +91,28 @@ export default function NoticePage({ isAdmin = false }) {
                   </div>
                   <div className="text-xs text-gray-600 truncate select-none">{notice.content}</div>
                 </div>
-                {/* 삭제 버튼 */}
-                <button
-                  className="absolute top-0 h-full w-20 bg-red-500 text-white font-bold text-base z-10 duration-300"
+                {/* 버튼 컨테이너 */}
+                <div
+                  className="absolute top-0 h-full flex z-5"
                   style={{
                     left: `calc(100% + ${dragX}px)`,
                     transition: isDragging ? 'none' : 'left 0.2s',
                     pointerEvents: Math.abs(dragX) > 40 ? 'auto' : 'none',
                   }}
-                  onClick={handleDelete}
                 >
-                  삭제
-                </button>
+                  <button
+                    className="w-20 h-full bg-blue-500 text-white font-bold text-base duration-300"
+                    onClick={() => alert('팝업 설정 기능은 아직 구현되지 않았습니다.')}
+                  >
+                    팝업 설정
+                  </button>
+                  <button
+                    className="w-20 h-full bg-red-500 text-white font-bold text-base duration-300"
+                    onClick={handleDelete}
+                  >
+                    삭제
+                  </button>
+                </div>
               </div>
             );
           } else {
