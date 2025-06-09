@@ -47,6 +47,7 @@ function App() {
           <Route path="/admin/notice/write" element={<NoticeWritePage />} />
           <Route path="/admin/inquiry" element={<MyInquiryPage isAdmin={true} />} />
           <Route path="/admin/inquiry/:id" element={<InquiryDetailPage isAdmin={true} />} />
+          <Route path="/admin/timetable" element={<ShuttleTimetablePage isAdmin={true} />} />
         </Routes>
       </div>
     </BrowserRouter>
