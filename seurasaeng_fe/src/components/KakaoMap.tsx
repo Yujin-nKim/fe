@@ -3,6 +3,7 @@ import useWebSocket from '../hooks/useSocketReceive';
 import { MOBILITY_API_KEY } from '../constants/env';
 import { API } from '../constants/api';
 import type { KakaoMapProps } from '../types/ComponentTypes';
+import apiClient from '../libs/axios';
 
 declare global {
   interface Window {
@@ -16,10 +17,12 @@ const ITCEN_TOWER_POSITION = {
   longitude: 126.9912,
 };
 
-// TODO: 상수 변수 어떻게 할지 (분리할까?)
+// TODO: 상수 변수 어떻게 할지 
 const START_MARKER_IMAGE = '/map-markers/start-marker.png';
 const END_MARKER_IMAGE = '/map-markers/end-marker.png';
-const BUS_MARKER_IMAGE = '/map-markers/bus-marker-blue.png';
+const BUS_MARKER_IMAGE_BLUE = '/map-markers/bus-marker-blue.png';
+const BUS_MARKER_IMAGE_YELLOW = '/map-markers/bus-marker-orange.png';
+const BUS_MARKER_IMAGE_RED = '/map-markers/bus-marker-red.png';
 
 export default function KakaoMap({ route, activeTab }: KakaoMapProps) {
 
@@ -34,6 +37,10 @@ export default function KakaoMap({ route, activeTab }: KakaoMapProps) {
   const [isBusOperating, setIsBusOperating] = useState(false); 
   /* 실시간으로 수신하는 GPS 데이터 */
   const { gpsData } = useWebSocket(route ? route.id : null);
+
+  const [currentCount, setCurrentCount] = useState<number>(0);
+  const [maxCount, setMaxCount] = useState<number>(45); 
+  const [busMarkerImage, setBusMarkerImage] = useState<string>(BUS_MARKER_IMAGE_BLUE);
 
   // 지도 초기화 
   useEffect(() => {
@@ -62,7 +69,7 @@ export default function KakaoMap({ route, activeTab }: KakaoMapProps) {
       ? { lat: ITCEN_TOWER_POSITION.latitude, lng: ITCEN_TOWER_POSITION.longitude }
       : { lat: route.latitude, lng: route.longitude };
     
-    console.log('출발지:', start, '도착지:', end);
+    console.log('[좌표 계산] 출발지:', start, '도착지:', end);
     return { start, end };
   };
 
@@ -174,12 +181,10 @@ const endMarker = new window.kakao.maps.Marker({
       if (!points) return;
 
       try {
-        console.log('API 요청 start:', points.start, points.end);
+        console.log('[API 요청] - 카카오 모빌리티 API | 출발지 : ', points.start, ' -> 도착지 : ', points.end);
         const data = await fetchRouteFromMobilityAPI(points.start, points.end);
-        console.log('API 응답 데이터:', data);
 
         const vertexes = data.routes[0].sections[0].roads.flatMap((road: any) => road.vertexes);
-        console.log('vertexes:', vertexes);
         
         drawRouteOnMap(points.start, points.end, vertexes);
       } catch (error) {
@@ -209,7 +214,7 @@ const endMarker = new window.kakao.maps.Marker({
           position: busPosition,
           map: map,
           image: new window.kakao.maps.MarkerImage(
-            BUS_MARKER_IMAGE,
+            busMarkerImage,
             new window.kakao.maps.Size(40, 40)
           ),
           title: '버스 위치',
@@ -227,19 +232,84 @@ const endMarker = new window.kakao.maps.Marker({
       }
       setIsBusOperating(false);
     }
-  }, [gpsData, map]);
+  }, [gpsData, map, busMarkerImage]);
+
+    // 탑승 인원 조회 API  호출 함수
+const fetchPassengerCount = async (shuttleId: string) => {
+  try {
+    const response = await apiClient.get(API.routes.count(shuttleId));
+    console.log('탑승인원 응답:', response.data);
+    setCurrentCount(response.data.count);
+  } catch (error) {
+    console.error('탑승 인원 API 오류:', error);
+  }
+};
+
+  // 운행 중일 때 2초마다 탑승 인원 체크
+  useEffect(() => {
+    if (!route?.id) return;
+
+    let interval: number | null = null;
+
+    if (isBusOperating) {
+      fetchPassengerCount(String(route.id));
+      interval = setInterval(() => {
+        fetchPassengerCount(String(route.id));
+      }, 2000);
+    } else {
+      setCurrentCount(0);
+    }
+
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [isBusOperating, route]);
+
+// 현재 탑승 인원 정보에 따라 버스 색상 변경
+const getBusImage = (count: number) => {
+  if (count <= 15) return BUS_MARKER_IMAGE_BLUE;
+  if (count <= 30) return BUS_MARKER_IMAGE_YELLOW;
+  return BUS_MARKER_IMAGE_RED;
+};
+
+// 현재 탑승 인원 정보에 따라 텍스트 색상 변경
+const getCountColor = (count: number) => {
+  if (count <= 15) return 'text-blue-500';
+  if (count <= 30) return 'text-yellow-500';
+  return 'text-red-500';
+};
+
+useEffect(() => {
+  if (isBusOperating) {
+    const newImage = getBusImage(currentCount);
+    setBusMarkerImage(newImage);
+
+    if (busMarker) {
+      busMarker.setImage(new window.kakao.maps.MarkerImage(
+        newImage,
+        new window.kakao.maps.Size(40, 40)
+      ));
+    }
+  }
+}, [currentCount]);
 
   return (
     <div>
-          <div ref={mapRef} className="w-full h-64 rounded-lg shadow"></div>
-          {/* 운행 상태 표시 */}
+      <div ref={mapRef} className="w-full h-64 rounded-lg shadow"></div>
+
       <div className="text-center mt-4 font-semibold">
         {isBusOperating ? (
           <span className="text-green-600">셔틀버스 운행 중입니다.</span>
         ) : (
           <span className="text-red-600">현재 운행 중이 아닙니다.</span>
         )}
-      </div> 
+      </div>
+
+      {isBusOperating && (
+        <div className="w-full text-center text-base font-bold mb-2">
+          현재 탑승인원 : <span className={getCountColor(currentCount)}>{currentCount}</span> / {maxCount}
+        </div>
+      )}
     </div>
   );
 }
