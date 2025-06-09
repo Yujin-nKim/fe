@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { PERPLEXITY_API_KEY } from '../constants/env';
 
 // 퍼플렉시티 챗봇 시스템 프롬프트
 export const PERPLEXITY_SYSTEM_PROMPT =
@@ -6,7 +7,10 @@ export const PERPLEXITY_SYSTEM_PROMPT =
 
 // 퍼플렉시티 챗봇 API 호출 함수
 export async function fetchPerplexityChat(userMessage: string) {
-  const apiKey = import.meta.env.VITE_PERPLEXITY_API_KEY;
+  if (!PERPLEXITY_API_KEY) {
+    throw new Error('API key is not configured');
+  }
+
   try {
     const response = await axios.post(
       'https://api.perplexity.ai/chat/completions',
@@ -27,7 +31,7 @@ export async function fetchPerplexityChat(userMessage: string) {
         headers: {
           'accept': 'application/json',
           'content-type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`,
+          'Authorization': `Bearer ${PERPLEXITY_API_KEY}`,
         },
       }
     );
