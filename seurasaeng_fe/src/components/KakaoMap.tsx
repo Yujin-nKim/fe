@@ -39,7 +39,7 @@ export default function KakaoMap({ route, activeTab }: KakaoMapProps) {
   const { gpsData } = useWebSocket(route ? route.id : null);
 
   const [currentCount, setCurrentCount] = useState<number>(0);
-  const [maxCount, setMaxCount] = useState<number>(45); 
+  const [maxCount] = useState<number>(45); 
   const [busMarkerImage, setBusMarkerImage] = useState<string>(BUS_MARKER_IMAGE_BLUE);
 
   // 지도 초기화 
