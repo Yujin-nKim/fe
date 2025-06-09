@@ -29,6 +29,26 @@ export default function Chatbot({ onClose }: { onClose: () => void }) {
   const offset = useRef({ x: 0, y: 0 });
   const lastTouchPos = useRef(DEFAULT_POSITION);
   const chatContainerRef = useRef<HTMLDivElement>(null);
+  const chatWindowRef = useRef<HTMLDivElement>(null);
+
+  // 외부 클릭 감지
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent | TouchEvent) => {
+      if (chatWindowRef.current && !chatWindowRef.current.contains(event.target as Node)) {
+        event.preventDefault();
+        event.stopPropagation();
+        onClose();
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('touchstart', handleClickOutside, { passive: false });
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+    };
+  }, [onClose]);
 
   // 로딩 애니메이션
   useEffect(() => {
@@ -164,6 +184,7 @@ export default function Chatbot({ onClose }: { onClose: () => void }) {
 
   return (
     <div
+      ref={chatWindowRef}
       className={`w-[340px] h-[430px] max-w-[95vw] bg-white rounded-2xl shadow-2xl z-40 flex flex-col overflow-hidden border border-gray-100${isResetting ? ' transition-all duration-300' : ''}`}
       style={{
         position: "fixed",
