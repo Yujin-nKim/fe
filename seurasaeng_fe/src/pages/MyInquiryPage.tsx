@@ -14,7 +14,7 @@ function getStatusBadge(status: string) {
   return null;
 }
 
-export default function MyInquiryPage() {
+export default function MyInquiryPage({ isAdmin = false }) {
   const navigate = useNavigate();
   const [draggedId, setDraggedId] = useState<number|null>(null);
   const [dragXMap, setDragXMap] = useState<{[id:number]:number}>({});
@@ -64,7 +64,7 @@ export default function MyInquiryPage() {
   return (
     <div className="min-h-screen pb-50 bg-white">
       {/* 상단바 */}
-      <TopBar title="나의 문의 내역" />
+      <TopBar title={isAdmin ? "1:1 문의 관리" : "나의 문의 내역"} />
       <div className="border-b border-gray-100" />
       {/* 문의 목록 */}
       <div className="flex-1 pl-4 pt-14">
@@ -83,7 +83,7 @@ export default function MyInquiryPage() {
                 onTouchStart={e => handleTouchStart(e, inquiry.id)}
                 onTouchMove={e => handleTouchMove(e, inquiry.id)}
                 onTouchEnd={() => handleTouchEnd(inquiry.id)}
-                onClick={() => navigate(`/inquiry/${inquiry.id}`)}
+                onClick={() => navigate(isAdmin ? `/admin/inquiry/${inquiry.id}` : `/inquiry/${inquiry.id}`)}
               >
                 <div className="font-bold text-sm mb-1">{inquiry.title}</div>
                 <div className="text-xs text-gray-400 mb-1">
@@ -114,14 +114,16 @@ export default function MyInquiryPage() {
         })}
       </div>
       {/* 문의하기 FAB 버튼 - 하단 중앙 */}
-      <button
-        className="fixed bottom-20 left-1/2 -translate-x-1/2 z-30 w-16 h-16 rounded-full bg-[#5382E0] text-white flex items-center justify-center shadow-lg text-xl font-bold"
-        style={{ boxShadow: '0 4px 16px rgba(83,130,224,0.15)' }}
-        onClick={() => navigate('/inquiry/write')}
-        aria-label="문의하기"
-      >
-        <img src="/add.png" alt="문의하기" className="w-8 h-8 brightness-0 invert" />
-      </button>
+      {!isAdmin && (
+        <button
+          className="fixed bottom-20 left-1/2 -translate-x-1/2 z-30 w-16 h-16 rounded-full bg-[#5382E0] text-white flex items-center justify-center shadow-lg text-xl font-bold"
+          style={{ boxShadow: '0 4px 16px rgba(83,130,224,0.15)' }}
+          onClick={() => navigate('/inquiry/write')}
+          aria-label="문의하기"
+        >
+          <img src="/add.png" alt="문의하기" className="w-8 h-8 brightness-0 invert" />
+        </button>
+      )}
       <BottomBar />
     </div>
   );
