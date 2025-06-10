@@ -1,0 +1,39 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --vh: 100vh;
+}
+
+.main-container {
+  min-height: calc(var(--vh, 1vh) * 100);
+  background-color: #fdfdfe;
+}
+
+@font-face {
+  font-family: 'GmarketSans';
+  src: url('./assets/gmarket-sans-light.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'GmarketSans';
+  src: url('./assets/gmarket-sans-medium.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'GmarketSans';
+  src: url('./assets/gmarket-sans-bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+body {
+  font-family: 'GmarketSans', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  background-color: #fdfdfe;
+}
